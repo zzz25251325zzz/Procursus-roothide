@@ -7,8 +7,9 @@ DPKG_VERSION   := 1.21.21
 DEB_DPKG_V     ?= $(DPKG_VERSION)
 
 dpkg-setup: setup
-	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://deb.debian.org/debian/pool/main/d/dpkg/dpkg_$(DPKG_VERSION).tar.xz)
+	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://snapshot.debian.org/archive/debian-debug/20230225T204519Z/pool/main/d/dpkg/dpkg_$(DPKG_VERSION).tar.xz )
 	$(call EXTRACT_TAR,dpkg_$(DPKG_VERSION).tar.xz,dpkg-$(DPKG_VERSION),dpkg)
+
 	$(call DO_PATCH,dpkg,dpkg,-p1)
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 	$(call DO_PATCH,dpkg-ios,dpkg,-p1)

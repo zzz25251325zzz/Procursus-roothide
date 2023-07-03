@@ -25,6 +25,7 @@ $(error Please run `umask 022` before running this)
 endif
 
 RELATIVE_RPATH       := 0
+SSH_STRAP            := 0
 
 MEMO_TARGET          ?= darwin-arm64
 MEMO_CFVER           ?= 1800
@@ -711,21 +712,27 @@ CHECKSUM_VERIFY = if [ "$(1)" = "sha1" -o "$(1)" = "sha1sum" ]; then \
 		fi
 
 EXTRACT_TAR = -if [ ! -d $(BUILD_WORK)/$(3) ] || [ "$(4)" = "1" ]; then \
-		cd $(BUILD_WORK) && \
-		tar -xf $(BUILD_SOURCE)/$(1) && \
-		mkdir -p $(3); \
-		cp -a $(2)/. $(3); \
-		rm -rf $(2); \
+		if [ -d ./source-repo/$(3) ]; then \
+			echo "using exists source..."; \
+			cp -a ./source-repo/$(3)/. $(BUILD_WORK)/$(3); \
+		else \
+			cd $(BUILD_WORK) && \
+			tar -xf $(BUILD_SOURCE)/$(1) && \
+			mkdir -p $(3); \
+			cp -a $(2)/. $(3); \
+	 		cp -a $(2)/. $(BUILD_ROOT)/source-repo/$(3); \
+			rm -rf $(2); \
+		fi \
 	fi
 
 DOWNLOAD_FILE = if [ ! -f "$(1)" ]; then \
-					echo "Downloading $(1)"; \
+					echo "Downloading $(2) => $(1)"; \
 					if [ -z "$$LIST" ]; then \
 						$(CURL) --output \
 							$(1) $(2) ; \
 					else \
 						$(CURL) --output \
-							$(1) $(2) & \
+							$(1) $(2) ; \
 					fi; \
 				else echo "$(1) already downloaded."; fi
 
@@ -799,7 +806,7 @@ AFTER_BUILD = \
 			if [ "$(RELATIVE_RPATH)" = "1" ]; then \
 				$(I_N_T) -add_rpath "@loader_path/$$(realpath --relative-to=$$(dirname $$file) $(BUILD_STAGE)/$$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX))/lib" $$file; \
 			else \
-				$(I_N_T) -add_rpath "$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib" $$file; \
+				$(I_N_T) -add_rpath "@loader_path/.jbroot/$(MEMO_SUB_PREFIX)/lib" $$file; \
 				if [ ! -z "$(3)" ]; then \
 					$(I_N_T) -add_rpath "$(3)" $$file; \
 				fi; \
@@ -810,6 +817,7 @@ AFTER_BUILD = \
 				done; \
 			fi; \
 			$(STRIP) -x $$file; \
+			./_shimpatch.sh $$file; \
 		fi; \
 	done; \
 	rm -f $(BUILD_STAGE)/$$pkg/._lib_cache; \
@@ -899,8 +907,10 @@ PACK = \
 			fi; \
 		fi; \
 	fi; \
-	find $(BUILD_DIST)/$(1)/$(MEMO_PREFIX)/etc -type f -printf '$(MEMO_PREFIX)/etc/%P\n' | LC_ALL=C sort >> $(BUILD_DIST)/$(1)/DEBIAN/conffiles; \
-	[ -s $(BUILD_DIST)/$(1)/DEBIAN/conffiles ] || rm $(BUILD_DIST)/$(1)/DEBIAN/conffiles; \
+	if [ -e $(BUILD_DIST)/$(1)/$(MEMO_PREFIX)/etc ]; then \
+		find $(BUILD_DIST)/$(1)/$(MEMO_PREFIX)/etc -type f -printf '$(MEMO_PREFIX)/etc/%P\n' | LC_ALL=C sort >> $(BUILD_DIST)/$(1)/DEBIAN/conffiles; \
+	fi; \
+	[ -s $(BUILD_DIST)/$(1)/DEBIAN/conffiles ] && rm -f $(BUILD_DIST)/$(1)/DEBIAN/conffiles; \
 	sed -i '$$a\' $(BUILD_DIST)/$(1)/DEBIAN/control; \
 	cd $(BUILD_DIST)/$(1) && find . -type f ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' ! -regex '.*?DEBIAN.*' -printf '"%P" ' | xargs md5sum > $(BUILD_DIST)/$(1)/DEBIAN/md5sums; \
 	$(FAKEROOT) chmod 0755 $(BUILD_DIST)/$(1)/DEBIAN/*; \
@@ -1141,6 +1151,16 @@ ramdisk:
 
 package:: $(SUBPROJECTS:%=%-package)
 
+
+base-setup::
+cacerts-setup::
+chariz-keyring-setup::
+essential-setup::
+havoc-keyring-setup::
+keyring-setup::
+profile.d-setup::
+bootstrap-setup:: $(STRAPPROJECTS:%=%-setup)
+
 strapprojects:: export BUILD_DIST=$(BUILD_STRAP)/work/
 strapprojects:: $(STRAPPROJECTS:%=%-package)
 bootstrap:: .SHELLFLAGS=-O extglob -c
@@ -1157,6 +1177,7 @@ bootstrap:: strapprojects
 	else \
 		PKGS="apt/apt_*.deb base/base_*.deb bash/bash_*.deb brotli/libbrotli1_*.deb cacerts/ca-certificates_*.deb chariz-keyring/chariz-keyring_*.deb coreutils/coreutils_*.deb darwintools/darwintools_*.deb dash/dash_*.deb debianutils/debianutils_*.deb diffutils/diffutils_*.deb diskdev-cmds/diskdev-cmds_*.deb dpkg/dpkg_*.deb essential/essential_*.deb file-cmds/file-cmds_*.deb findutils/findutils_*.deb firmware-sbin/firmware-sbin_*.deb gnupg/gpgv_*.deb grep/grep_*.deb havoc-keyring/havoc-keyring_*.deb launchctl/launchctl_*.deb apt/libapt-pkg6.0_*.deb libassuan/libassuan0_*.deb libxcrypt/libcrypt2_*.deb dimentio/libdimentio0_*.deb libedit/libedit0_*.deb libffi/libffi8_*.deb libgcrypt/libgcrypt20_*.deb libgmp10/libgmp10_*.deb gnutls/libgnutls30_*.deb libgpg-error/libgpg-error0_*.deb nettle/libhogweed6_*.deb libidn2/libidn2-0_*.deb gettext/libintl8_*.deb libiosexec/libiosexec1_*.deb libkrw/libkrw0_*.deb lz4/liblz4-1_*.deb xz/liblzma5_*.deb libmd/libmd0_*.deb ncurses/libncursesw6_*.deb nettle/libnettle8_*.deb npth/libnpth0_*.deb p11-kit/libp11-kit0_*.deb pam-modules/libpam-modules_*.deb openpam/libpam2_*.deb pcre/libpcre1_*.deb pcre2/libpcre2-8-0_*.deb readline/libreadline8_*.deb libtasn1/libtasn1-6_*.deb libunistring/libunistring5_*.deb xxhash/libxxhash0_*.deb zlib-ng/libz-ng2_*.deb zstd/libzstd1_*.deb ncurses/ncurses-bin_*.deb ncurses/ncurses-term_*.deb openssh/openssh-server_*.deb openssh/openssh-sftp-server_*.deb openssh/openssh-client_*.deb openssl/libssl3_*.deb keyring/procursus-keyring_*.deb profile.d/profile.d_*.deb sed/sed_*.deb shell-cmds/shell-cmds_*.deb shshd/shshd_*.deb snaputil/snaputil_*.deb sudo/sudo_*.deb system-cmds/system-cmds_*.deb tar/tar_*.deb uikittools/uikittools_*.deb vi/vi_*.deb zsh/zsh_*.deb"; \
 	fi; \
+	export FAKEROOT='fakeroot -i $(BUILD_STAGE)/.fakeroot_bootstrap -s $(BUILD_STAGE)/.fakeroot_bootstrap --'; \
 	cd $(BUILD_STRAP); for DEB in $$PKGS; do \
 		if [ ! -f $$DEB ]; then \
 			continue; \
@@ -1166,7 +1187,9 @@ bootstrap:: strapprojects
 		cp $(BUILD_STRAP)/strap/DEBIAN/md5sums $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/info/$$PKGNAME.md5sums; \
 		dpkg-deb -c $$DEB | cut -f2- -d"." | awk -F'\\-\\>' '{print $$1}' | sed '1 s/$$/./' | sed 's/\/$$//' > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/info/$$PKGNAME.list; \
 		for script in preinst postinst extrainst_ prerm postrm conffiles triggers; do \
-			cp $(BUILD_STRAP)/strap/DEBIAN/$$script $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/info/$$PKGNAME.$$script; \
+			if [ -e $(BUILD_STRAP)/strap/DEBIAN/$$script ]; then \
+				cp $(BUILD_STRAP)/strap/DEBIAN/$$script $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/info/$$PKGNAME.$$script; \
+			fi; \
 		done; \
 		cat $(BUILD_STRAP)/strap/DEBIAN/control >> $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/status; \
 		echo -e "Status: install ok installed\n" >> $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/status; \
@@ -1266,6 +1289,23 @@ endif
 	$$FAKEROOT chown 0:0 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/root; \
 	$$FAKEROOT chown 501:501 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile; \
 	$$FAKEROOT chmod 1777 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/tmp; \
+	$$FAKEROOT ln -s ./ $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.jbroot; \
+	while read dir; do \
+		if [ ! -e "$$dir/.jbroot" ]; then \
+			ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+		fi; \
+	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type d); \
+	while read link; do \
+		target=$$(readlink "$$link"); \
+		if echo "$$target" | grep -q ^$(MEMO_PREFIX) ; then \
+			rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
+		fi; \
+	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
+	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/update_links.sh > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
+	$$FAKEROOT chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
+	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/sbin/updatelink $(BUILD_STRAP)/strap/var/jb/usr/sbin/; \
+	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/lib/libjbpath.dylib $(BUILD_STRAP)/strap/var/jb/usr/lib/; \
+	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/lib/libjbpathapis.dylib $(BUILD_STRAP)/strap/var/jb/usr/lib/; \
 	cd $(BUILD_STRAP)/strap && $$FAKEROOT tar -cf ../bootstrap.tar .
 	@if [[ "$(SSH_STRAP)" = 1 ]]; then \
 		BOOTSTRAP=bootstrap-ssh.tar.zst; \
@@ -1274,7 +1314,7 @@ endif
 	fi; \
 	zstd -qf -c19 --rm $(BUILD_STRAP)/bootstrap.tar > $(BUILD_STRAP)/$${BOOTSTRAP}; \
 	gpg --armor -u $(MEMO_PGP_SIGN_KEY) --detach-sign $(BUILD_STRAP)/$${BOOTSTRAP}; \
-	rm -rf $(BUILD_STRAP)/*/; \
+	#rm -rf $(BUILD_STRAP)/*/; \
 	echo "********** Successfully built bootstrap with **********"; \
 	echo "$(STRAPPROJECTS)"; \
 	echo "$(BUILD_STRAP)/$${BOOTSTRAP}"
@@ -1500,6 +1540,7 @@ ifneq ($(MEMO_NO_IOSEXEC),1)
 	@sed -i '1s/^/#include <libiosexec.h>\n/' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{unistd,pwd,grp}.h
 	@grep -q libiosexec.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/spawn.h || sed -i '1s/^/#include <libiosexec.h>\n/' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/spawn.h
 endif
+
 endif
 
 ifneq ($(MEMO_QUIET),1)
@@ -1508,10 +1549,10 @@ ifneq ($(MEMO_QUIET),1)
 endif # ($(MEMO_QUIET),1)
 
 clean::
-	rm -rf $(BUILD_ROOT)/build_{source,stage}
+	rm -rf $(BUILD_ROOT)/build_{stage,strap,work}
 
 extreme-clean: clean
-	rm -rf $(BUILD_ROOT)/build_{base,strap,work}
+	rm -rf $(BUILD_ROOT)/build_{base,}
 
 define mootext
                  (__)

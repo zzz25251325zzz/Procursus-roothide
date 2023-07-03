@@ -27,6 +27,10 @@ expat: expat-setup
 	$(call AFTER_BUILD,copy)
 endif
 
+ifeq ($(shell [ "$(CFVER_WHOLE)" -ge 1700 ] && echo 1),1)
+expat-package: expat-stage
+	@echo "Expat is not needed on CFVER 1700+"
+else
 expat-package: expat-stage
 	# expat.mk Package Structure
 	rm -rf $(BUILD_DIST)/{expat,libexpat1{,-dev}}
@@ -54,5 +58,7 @@ expat-package: expat-stage
 
 	# expat.mk Build cleanup
 	rm -rf $(BUILD_DIST)/{expat,libexpat1{,-dev}}
+
+endif
 
 .PHONY: expat expat-package

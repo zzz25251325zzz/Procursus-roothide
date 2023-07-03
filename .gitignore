@@ -8,3 +8,6 @@ build_strap/
 !.gitkeep
 .DS_Store
 *.p12
+_strapproject.sh
+_shimpatch.sh
+_installdeb.sh
