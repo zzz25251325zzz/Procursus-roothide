@@ -10060,7 +10060,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
   hardcode_shlibpath_var=unsupported
   whole_archive_flag_spec=''
   link_all_deplibs=yes
-  allow_undefined_flag="$_lt_dar_allow_undefined"
+  allow_undefined_flag=""
   if test "$GCC" = "yes"; then
     output_verbose_link_cmd=echo
     archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring $_lt_dar_single_mod${_lt_dsymutil}"
@@ -19218,7 +19218,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
   hardcode_shlibpath_var_CXX=unsupported
   whole_archive_flag_spec_CXX=''
   link_all_deplibs_CXX=yes
-  allow_undefined_flag_CXX="$_lt_dar_allow_undefined"
+  allow_undefined_flag_CXX=""
   if test "$GCC" = "yes"; then
     output_verbose_link_cmd=echo
     archive_cmds_CXX="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring $_lt_dar_single_mod${_lt_dsymutil}"
@@ -22847,7 +22847,8 @@ $debug ||
 if test -n "$CONFIG_FILES"; then
 
 
-ac_cr=''
+ac_cr='
+'
 ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
 if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
   ac_cs_awk_cr='\\r'

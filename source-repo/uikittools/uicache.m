@@ -501,7 +501,7 @@ void registerAll(void) {
 	}
 
 	NSURL *appsURL = [NSURL fileURLWithPath:@"/Applications" isDirectory:YES];
-	NSURL *secondaryAppsURL = [NSURL fileURLWithPath:APP_PATH isDirectory:YES];
+	NSURL *secondaryAppsURL = [NSURL fileURLWithPath:[NSString stringWithUTF8String:realpath(APP_PATH.UTF8String,NULL)] isDirectory:YES];
 	NSString *secondaryApps = [[secondaryAppsURL URLByResolvingSymlinksInPath] path];
 	NSMutableSet<NSURL *> *installedAppURLs = [[NSMutableSet alloc] init];
 
@@ -528,7 +528,7 @@ void registerAll(void) {
 	LSApplicationWorkspace *workspace = [LSApplicationWorkspace defaultWorkspace];
 	for (LSApplicationProxy *app in [workspace allApplications]) {
 		NSString *appPath = [app bundleURL].path;
-		if ([appPath hasPrefix:@"/Applications"] || [appPath hasPrefix:APP_PATH] || [appPath hasPrefix:secondaryApps]) {
+		if ([appPath hasPrefix:@"/Applications"] || [appPath hasPrefix:[NSString stringWithUTF8String:realpath(APP_PATH.UTF8String,NULL)]] || [appPath hasPrefix:secondaryApps]) {
 			[registeredAppURLs addObject:[app bundleURL]];
 		}
 	}

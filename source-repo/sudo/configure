@@ -12378,11 +12378,11 @@ printf "%s\n" "$lt_cv_ld_force_load" >&6; }
     rhapsody* | darwin1.[012])
       _lt_dar_allow_undefined='$wl-undefined ${wl}suppress' ;;
     darwin1.*)
-      _lt_dar_allow_undefined='$wl-flat_namespace $wl-undefined ${wl}suppress' ;;
+      _lt_dar_allow_undefined=' $wl-undefined ${wl}suppress' ;;
     darwin*)
       case $MACOSX_DEPLOYMENT_TARGET,$host in
         10.[012],*|,*powerpc*-darwin[5-8]*)
-          _lt_dar_allow_undefined='$wl-flat_namespace $wl-undefined ${wl}suppress' ;;
+          _lt_dar_allow_undefined=' $wl-undefined ${wl}suppress' ;;
         *)
           _lt_dar_allow_undefined='$wl-undefined ${wl}dynamic_lookup' ;;
       esac
@@ -18152,7 +18152,7 @@ main (void)
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  ax_cv_check_ldflags___Wl__force_flat_namespace=yes
+  ax_cv_check_ldflags___Wl__force_flat_namespace=no
 else $as_nop
   ax_cv_check_ldflags___Wl__force_flat_namespace=no
 fi

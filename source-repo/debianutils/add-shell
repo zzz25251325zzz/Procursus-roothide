@@ -28,8 +28,8 @@ fi
 
 for i
 do
-        REALDIR="$(dirname "$(realpath -m "$i")")/$(basename "$i")"
-        for j in "$i" "$REALDIR"
+        #REALDIR="$(dirname "$(realpath -m "$i")")/$(basename "$i")"
+        for j in "$i" #"$REALDIR"
         do
                 if ! grep -q "^${j}$" "$tmpfile"
                 then

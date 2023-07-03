@@ -17364,7 +17364,7 @@ fi
     whole_archive_flag_spec=''
   fi
   link_all_deplibs=yes
-  allow_undefined_flag=$_lt_dar_allow_undefined
+  allow_undefined_flag=
   case $cc_basename in
      ifort*|nagfor*) _lt_dar_can_shared=yes ;;
      *) _lt_dar_can_shared=$GCC ;;
@@ -20473,7 +20473,7 @@ fi
     whole_archive_flag_spec_CXX=''
   fi
   link_all_deplibs_CXX=yes
-  allow_undefined_flag_CXX=$_lt_dar_allow_undefined
+  allow_undefined_flag_CXX=
   case $cc_basename in
      ifort*|nagfor*) _lt_dar_can_shared=yes ;;
      *) _lt_dar_can_shared=$GCC ;;

@@ -193,8 +193,8 @@
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    NSString *userPath = [NSString stringWithFormat:@"/%@/User", PREFIX];
-    NSString *varMobileDirectory = [NSString stringWithFormat:@"/%@/var/mobile", PREFIX];
+    NSString *userPath = [NSString stringWithFormat:@"/%@/User", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
+    NSString *varMobileDirectory = [NSString stringWithFormat:@"/%@/var/mobile", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
 
     NSDictionary *userAttributes = [fileManager attributesOfItemAtPath:userPath error:nil];
 
@@ -205,7 +205,7 @@
         pid_t pid;
         extern char **environ;
 
-        NSString *prefixedCp = [NSString stringWithFormat:@"/%@/bin/cp", PREFIX];
+        NSString *prefixedCp = [NSString stringWithFormat:@"/%@/bin/cp", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
         char *cpPath = (char *) [[prefixedCp stringByReplacingOccurrencesOfString:@"//" withString:@"/"] UTF8String];
 
         char *argv[] = {
