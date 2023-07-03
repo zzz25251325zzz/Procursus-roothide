@@ -1,0 +1,91 @@
+.\"
+.\" Copyright (c) 2020-2023 ProcursusTeam
+.\" SPDX-License-Identifier: BSD-4-Clause
+.\"
+.Dd January 29, 2023
+.Dt UICACHE 1
+.Os
+.Sh NAME
+.Nm uicache
+.Nd Update registered applications
+.Sh SYNOPSIS
+.Nm
+.Op Fl afhlrv
+.Op Fl i Ar id
+.Op Fl p Ar path
+.Op Fl u Ar path
+.Sh DESCRIPTION
+Update iOS registered applications and optionally restart SpringBoard.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl a , -all
+Iterate through the system applications and update the cache to reflect any changes.
+This replicates behavior of the old
+.Nm
+ran without options.
+.It Fl f , -force
+Forces all applications to be reregistered when used with
+.Fl a
+rather than just the changes.
+This option will make
+.Fl a
+significantly slower.
+When used with
+.Fl p
+or
+.Fl u ,
+.Nm
+will operate on apps installed from the App Store.
+.It Fl h , -help
+Prints help text.
+.It Fl i , -info Ar bundleid
+Shows information about the application with the specified bundle ID.
+.It Fl l , -list
+Lists the bundle ID and path for each registered application.
+.It Fl p , -path Ar path
+Registers or updates an application bundle, at the specified
+.Ar path
+, to the cache.
+.It Fl s , -force-system
+Force register an app as a system app.
+.Pp
+When registering an app inside /var/containers, it will normally
+be registered as a user app.
+When using this flag, the app will be registered as a system app,
+regardless of whether it resides in /var/containers or not.
+.It Fl r , -respring
+Restarts SpringBoard and backboard after all other actions.
+.It Fl u , -unregister Ar path
+Unregisters an application bundle, using the specified
+.Ar path
+, from the cache.
+.It Fl v , -verbose
+Print out which apps are registered and unregistered when used with
+.Fl a .
+.El
+.Sh EXAMPLES
+To refresh all applications
+.Dl "uicache -a"
+.Pp
+To register Sileo
+.Dl "uicache -p /Applications/Sileo.app"
+.Pp
+To show information about the Settings app
+.Dl "uicache -i com.apple.preferences"
+.Sh SEE ALSO
+.Xr sbreload 1 ,
+.Xr uiopen 1
+.Sh HISTORY
+The
+.Nm
+utility first appeared in uikittools on September 14, 2008, written by
+.An Jay Qo Saurik Qc Freeman .
+Later, it was reimplemented by
+.An CoolStar
+for the Chimera jailbreak on April 30, 2019.
+The
+.Fl l
+and
+.Fl i
+flags were added to uikittools-ng on April 4, 2021, by
+.An Cameron Katri .

@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - '*.m'
+      - '*.c'
+      - '*.h'
+      - '.github/workflows/*'
+      - 'Makefile'
+  pull_request:
+    paths:
+      - '*.m'
+      - '*.c'
+      - '*.h'
+      - '.github/workflows/*'
+      - 'Makefile'
+  workflow_dispatch:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup environment
+        run: |
+          echo "CC=xcrun -sdk iphoneos cc -arch arm64" >> $GITHUB_ENV
+          echo "STRIP=xcrun -sdk iphoneos strip" >> $GITHUB_ENV
+          echo "CFLAGS=-I${HOME}/include -Os -flto=thin -Wextra -Wno-unused-parameter -miphoneos-version-min=12.0" >> $GITHUB_ENV
+          echo "LDFLAGS=-Os -flto=thin -miphoneos-version-min=12.0" >> $GITHUB_ENV
+          gh release download -R ProcursusTeam/ldid -p ldid_macosx_x86_64
+          install -m755 ldid_macosx_x86_64 ldid
+          echo "${PWD}" >> $GITHUB_PATH
+          mkdir -p ${HOME}/include
+          ln -s $(xcrun -sdk macosx --show-sdk-path)/usr/include/xpc ${HOME}/include/xpc
+          ln -s $(xcrun -sdk macosx --show-sdk-path)/usr/include/launch.h ${HOME}/include/launch.h
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: make -j$(sysctl -n hw.ncpu)
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: launchctl
+          path: launchctl
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.event_name == 'release' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: launchctl

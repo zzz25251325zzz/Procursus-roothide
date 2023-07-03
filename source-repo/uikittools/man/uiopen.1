@@ -1,0 +1,66 @@
+.\"-
+.\" Copyright (c) 2020-2021 ProcursusTeam
+.\" SPDX-License-Identifier: BSD-4-Clause
+.\"
+.Dd August 19, 2021
+.Dt UIOPEN 1
+.Os
+.Sh NAME
+.Nm uiopen
+.Nd open an application or URL
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl a Ar name
+.Op Fl b Ar id
+.Op Fl p Ar path
+.Op Fl u Ar url
+.Sh DESCRIPTION
+.Nm
+will open a specified app or URL, displaying it on SpringBoard.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl a , -app Ar name
+Finds the app with name and opens it.
+.It Fl b , -bundleid Ar id
+Opens the application with the specified bundle id.
+.It Fl h , -help
+Prints a help text
+.It Fl p , -path Ar path
+Opens the application at the specified .app bundle.
+.It Fl u , -url Ar url
+Opens the specified url in a browser for http or follows the url scheme.
+.El
+.Sh EXAMPLES
+To open github.com in the default browser
+.Dl "uiopen -u https://github.com"
+.Pp
+To open the Settings app
+.Dl "uiopen -a Settings"
+.Pp
+To open Sileo using it's path, /Applications/Sileo.app
+.Dl "uiopen -p /Application/Sileo.app"
+.Sh SEE ALSO
+.Xr uicache 1
+.Sh HISTORY
+The
+.Nm
+utility first appeared in uikittools on August 18, 2008, written by
+.An Jay Qo Saurik Qc Freeman .
+Later, it was reimplemented by
+.An CoolStar
+for the Chimera jailbreak on April 30, 2019.
+The
+.Fl u ,
+.Fl h ,
+and
+.Fl b
+were added to uiopen by absidue on December 25, 2020.
+The
+.Fl a ,
+and
+.Fl p
+flags were added by absidue on August 12, 2021.
+The
+.Nm Ar url
+format was deprecated on August 19, 2021.
