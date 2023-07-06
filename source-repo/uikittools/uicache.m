@@ -140,7 +140,7 @@ Modified work Copyright (C) 2021, Procursus Team. All Rights Reserved.\n\n"), ge
 	printf(_("  -f, --force              Force -a to reregister all Applications\n\
 							  and modify App Store apps\n"));
 	printf(_("  -p, --path <path>        Update application bundle at the specified path\n"));
-	printf(_("  -s, --force-system       When registering an app inside /var/containers/Bundle/Application, register it as system\n"));
+	printf(_("  -s, --force-system       When registering an app inside /var/containers, register it as system\n"));
 	printf(_("  -u, --unregister <path>  Unregister application bundle at the specified path\n"));
 	printf(_("  -r, --respring           Restart SpringBoard and backboardd after\n\
 							  updating applications\n"));
@@ -305,7 +305,7 @@ void registerPath(NSString *path, BOOL unregister, BOOL forceSystem) {
 		NSString *containerPath = [appContainer url].path;
 
 		BOOL isRemovableSystemApp = [[NSFileManager defaultManager] fileExistsAtPath:[@"/System/Library/AppSignatures" stringByAppendingPathComponent:appBundleID]];
-		BOOL registerAsUser = [path hasPrefix:@"/var/containers/Bundle/Application"] && !isRemovableSystemApp && !forceSystem;
+		BOOL registerAsUser = [path hasPrefix:@"/var/containers"] && !isRemovableSystemApp && !forceSystem;
 
 		NSMutableDictionary *dictToRegister = [NSMutableDictionary dictionary];
 
