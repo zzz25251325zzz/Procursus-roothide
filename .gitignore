@@ -12,3 +12,4 @@ _strapproject.sh
 _shimpatch.sh
 _installdeb.sh
 .source-repo/
+_signcheck.sh
