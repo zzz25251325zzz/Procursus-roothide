@@ -2,7 +2,8 @@ ifneq ($(PROCURSUS),1)
 $(error Use the main Makefile)
 endif
 
-SUBPROJECTS  += ldid
+#SUBPROJECTS  += ldid
+STRAPPROJECTS  += ldid
 LDID_VERSION := 2.1.5-procursus7
 DEB_LDID_V   ?= $(LDID_VERSION)
 
