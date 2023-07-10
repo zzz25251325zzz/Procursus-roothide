@@ -118,7 +118,7 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
-MEMO_PREFIX           ?= /var/jb
+MEMO_PREFIX           ?= 
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?=
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
