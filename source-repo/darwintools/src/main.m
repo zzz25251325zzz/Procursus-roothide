@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
     NSString *firmwareFile = [NSString stringWithFormat:@"%@/info/firmware.ver", device.getDPKGDataDirectory];
     NSString *firwareVersion = [NSString stringWithFormat:@"%d\n", FIRMWARE_VERSION];
 
-    if (![firwareVersion writeToFile:firmwareFile atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+    if (![firwareVersion writeToFile:jbroot(firmwareFile) atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
         [firmware exitWithError:error andMessage:[NSString stringWithFormat:@"Error writing firmware version to %@", firmwareFile]];
     }
 

@@ -24,7 +24,7 @@ ifneq ($(shell umask),0022)
 $(error Please run `umask 022` before running this)
 endif
 
-RELATIVE_RPATH       := 0
+ROOTLESS             := 1
 SSH_STRAP            := 0
 
 MEMO_TARGET          ?= darwin-arm64
@@ -118,6 +118,8 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
+ROOTLESS              := y
+MEMO_ROOTFS           := /rootfs
 MEMO_PREFIX           ?= 
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?=
@@ -789,7 +791,7 @@ AFTER_BUILD = \
 	else \
 		pkg="$@"; \
 	fi; \
-	if [ ! -z "$(MEMO_PREFIX)" ] && [ -d "$(BUILD_STAGE)/$$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)" ]; then \
+	if [ ! -z "$(ROOTLESS)" ] && [ -d "$(BUILD_STAGE)/$$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)" ]; then \
 		rm -f $(BUILD_STAGE)/$$pkg/._lib_cache && touch $(BUILD_STAGE)/$$pkg/._lib_cache; \
 		for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 			if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
@@ -803,13 +805,9 @@ AFTER_BUILD = \
 	fi; \
 	for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 		if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
-			if [ "$(RELATIVE_RPATH)" = "1" ]; then \
-				$(I_N_T) -add_rpath "@loader_path/$$(realpath --relative-to=$$(dirname $$file) $(BUILD_STAGE)/$$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX))/lib" $$file; \
-			else \
-				$(I_N_T) -add_rpath "@loader_path/.jbroot/$(MEMO_SUB_PREFIX)/lib" $$file; \
-				if [ ! -z "$(3)" ]; then \
-					$(I_N_T) -add_rpath "$(3)" $$file; \
-				fi; \
+			$(I_N_T) -add_rpath "@loader_path/.jbroot/$(MEMO_SUB_PREFIX)/lib" $$file; \
+			if [ ! -z "$(3)" ]; then \
+				$(I_N_T) -add_rpath "$(3)" $$file; \
 			fi; \
 			if [ -f $(BUILD_STAGE)/$$pkg/._lib_cache ]; then \
 				cat $(BUILD_STAGE)/$$pkg/._lib_cache | while read line; do \
@@ -1151,16 +1149,6 @@ ramdisk:
 
 package:: $(SUBPROJECTS:%=%-package)
 
-
-base-setup::
-cacerts-setup::
-chariz-keyring-setup::
-essential-setup::
-havoc-keyring-setup::
-keyring-setup::
-profile.d-setup::
-bootstrap-setup:: $(STRAPPROJECTS:%=%-setup)
-
 strapprojects:: export BUILD_DIST=$(BUILD_STRAP)/work/
 strapprojects:: $(STRAPPROJECTS:%=%-package)
 bootstrap:: .SHELLFLAGS=-O extglob -c
@@ -1195,7 +1183,7 @@ bootstrap:: strapprojects
 		echo -e "Status: install ok installed\n" >> $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library/dpkg/status; \
 		rm -rf $(BUILD_STRAP)/strap/DEBIAN; \
 	done
-ifeq ($(MEMO_PREFIX),)
+ifeq ($(ROOTLESS),)
 	rmdir --ignore-fail-on-non-empty $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/{Applications,bin,dev,etc/{default,profile.d},Library/{Frameworks,LaunchAgents,LaunchDaemons,Preferences,Ringtones,Wallpaper},sbin,System/Library/{Extensions,Fonts,Frameworks,Internet\ Plug-Ins,KeyboardDictionaries,LaunchDaemons,PreferenceBundles,PrivateFrameworks,SystemConfiguration,VideoDecoders},System/Library,System,tmp,$(MEMO_SUB_PREFIX)/{bin,games,include,sbin,share/{dict,misc}},var/{backups,cache,db,lib/misc,$(MEMO_ALT_PREFIX),lock,logs,mobile/{Library/Preferences,Library,Media},mobile,msgs,preferences,root/Media,root,run,spool,tmp,vm}}
 	mkdir -p $(BUILD_STRAP)/strap/private
 	rm -f $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/{sbin/{fsck,fsck_apfs,fsck_exfat,fsck_hfs,fsck_msdos,launchd,mount,mount_apfs,newfs_apfs,newfs_hfs,pfctl},$(MEMO_SUB_PREFIX)/sbin/{BTAvrcp,BTLEServer,BTMap,BTPbap,BlueTool,WirelessRadioManagerd,absd,addNetworkInterface,aslmanager,bluetoothd,cfprefsd,distnoted,filecoordinationd,ioreg,ipconfig,mDNSResponder,mDNSResponderHelper,mediaserverd,notifyd,nvram,pppd,racoon,rtadvd,scutil,spindump,syslogd,wifid}}
@@ -1250,7 +1238,7 @@ endif
 	echo "********** Successfully built bootstrap with **********"; \
 	echo "$(STRAPPROJECTS)"; \
 	echo "$(BUILD_STRAP)/$${BOOTSTRAP}"
-else # ($(MEMO_PREFIX),)
+else # ($(ROOTLESS),)
 	chmod 0775 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library
 	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/apt/preferences.d
 	cp $(BUILD_INFO)/procursus.preferences $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/apt/preferences.d/procursus
@@ -1289,23 +1277,36 @@ endif
 	$$FAKEROOT chown 0:0 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/root; \
 	$$FAKEROOT chown 501:501 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile; \
 	$$FAKEROOT chmod 1777 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/tmp; \
-	$$FAKEROOT ln -s ./ $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.jbroot; \
+	while read link; do \
+		target=$$(readlink "$$link"); \
+		if echo "$$target" | grep -q ^$(MEMO_PREFIX)/ ; then \
+			rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
+		fi; \
+	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
 	while read dir; do \
 		if [ ! -e "$$dir/.jbroot" ]; then \
 			ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
 		fi; \
 	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type d); \
-	while read link; do \
-		target=$$(readlink "$$link"); \
-		if echo "$$target" | grep -q ^$(MEMO_PREFIX) ; then \
-			rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
-		fi; \
-	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
+	rm -r $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev && ln -s /dev $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev; \
+	ln -s / $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/rootfs; \
+	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private; \
+	ln -s /private/preboot $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private/preboot; \
+	ln -s /etc/hosts $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/hosts; \
+	ln -s /etc/hosts.equiv $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/hosts.equiv; \
+	ln -s /usr/share/misc/trace.codes $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/usr/share/misc/trace.codes; \
+	ln -s /usr/share/zoneinfo $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/usr/share/zoneinfo; \
+	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/System/Library/CoreServices/; \
+	ln -s /System/Library/CoreServices/SystemVersion.plist $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/System/Library/CoreServices/SystemVersion.plist; \
+	ln -s /var/db/timezone $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/db/timezone; \
+	ln -s /bin/df $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/bin/df; \
+	ln -s /var/run/utmpx $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/run/utmpx; \
+	ln -s /sbin/mount $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/sbin/mount; \
 	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/update_links.sh > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
-	$$FAKEROOT chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
-	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/sbin/updatelink $(BUILD_STRAP)/strap/var/jb/usr/sbin/; \
-	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/lib/libjbpath.dylib $(BUILD_STRAP)/strap/var/jb/usr/lib/; \
-	$$FAKEROOT cp $(BUILD_BASE)/var/jb/usr/lib/libjbpathapis.dylib $(BUILD_STRAP)/strap/var/jb/usr/lib/; \
+	chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
+	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/sbin/updatelink $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/sbin/; \
+	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpath.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
+	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpathapis.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
 	cd $(BUILD_STRAP)/strap && $$FAKEROOT tar -cf ../bootstrap.tar .
 	@if [[ "$(SSH_STRAP)" = 1 ]]; then \
 		BOOTSTRAP=bootstrap-ssh.tar.zst; \
@@ -1318,7 +1319,7 @@ endif
 	echo "********** Successfully built bootstrap with **********"; \
 	echo "$(STRAPPROJECTS)"; \
 	echo "$(BUILD_STRAP)/$${BOOTSTRAP}"
-endif # ($(MEMO_PREFIX),)
+endif # ($(ROOTLESS),)
 
 %-package: FAKEROOT=fakeroot -i $(BUILD_STAGE)/.fakeroot_$$(echo $@ | sed 's/\(.*\)-package/\1/') -s $(BUILD_STAGE)/.fakeroot_$$(echo $@ | sed 's/\(.*\)-package/\1/') --
 %-package: .SHELLFLAGS=-O extglob -c

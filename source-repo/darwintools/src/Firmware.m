@@ -103,7 +103,7 @@
     NSString *packageListFile = [NSString stringWithFormat:pathFormat, package];
 
     NSError *error;
-    if (![packageList writeToFile:packageListFile atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+    if (![packageList writeToFile:jbroot(packageListFile) atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
         [self exitWithError:error andMessage:[NSString stringWithFormat:@"Error writing package list to %@", packageListFile]];
     }
 }
@@ -182,7 +182,7 @@
     NSError *error;
     NSString *statusFile = [self->_dataDirectory stringByAppendingString:@"/status"];
 
-    if (![self->_status writeToFile:statusFile atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+    if (![self->_status writeToFile:jbroot(statusFile) atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
         [self exitWithError:error andMessage:@"Error writing to status file"];
     }
 }
@@ -193,8 +193,8 @@
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    NSString *userPath = [NSString stringWithFormat:@"/%@/User", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
-    NSString *varMobileDirectory = [NSString stringWithFormat:@"/%@/var/mobile", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
+    NSString *userPath = [NSString stringWithFormat:@"/%@/User", PREFIX];
+    NSString *varMobileDirectory = [NSString stringWithFormat:@"/%@/var/mobile", PREFIX];
 
     NSDictionary *userAttributes = [fileManager attributesOfItemAtPath:userPath error:nil];
 
@@ -205,7 +205,7 @@
         pid_t pid;
         extern char **environ;
 
-        NSString *prefixedCp = [NSString stringWithFormat:@"/%@/bin/cp", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
+        NSString *prefixedCp = [NSString stringWithFormat:@"/%@/bin/cp", PREFIX];
         char *cpPath = (char *) [[prefixedCp stringByReplacingOccurrencesOfString:@"//" withString:@"/"] UTF8String];
 
         char *argv[] = {
@@ -224,14 +224,14 @@
     // delete item at user path if it exists
 
     if (userAttributes) {
-        if (![fileManager removeItemAtPath:userPath error:&error]) {
+        if (![fileManager removeItemAtPath:jbroot(userPath) error:&error]) {
             [self exitWithError:error andMessage:[NSString stringWithFormat:@"Error deleting %@", userPath]];
         }
     }
 
     // symlink user path to mobile user directory
 
-    if (![fileManager createSymbolicLinkAtPath:userPath withDestinationPath:varMobileDirectory error:&error]) {
+    if (![fileManager createSymbolicLinkAtPath:jbroot(userPath) withDestinationPath:jbroot(varMobileDirectory) error:&error]) {
         [self exitWithError:error andMessage:[NSString stringWithFormat:@"Error creating symbolic link at %@ to %@", userPath, varMobileDirectory]];
     }
 }

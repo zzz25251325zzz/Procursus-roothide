@@ -17,7 +17,7 @@ bash-setup: setup
 	$(call EXTRACT_TAR,bash-$(BASH_VERSION).tar.gz,bash-$(BASH_VERSION),bash)
 	mkdir -p $(BUILD_STAGE)/bash/$(MEMO_PREFIX)/bin
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
-ifneq (,$(MEMO_PREFIX))
+ifneq (,$(ROOTLESS))
 	sed -i 's|"/etc/profile|"$(MEMO_PREFIX)/etc/profile|' $(BUILD_WORK)/bash/pathnames.h.in
 endif
 BASH_CONFIGURE_ARGS := ac_cv_c_stack_direction=-1 \

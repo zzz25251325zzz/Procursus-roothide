@@ -160,7 +160,7 @@
 }
 
 - (NSString *)getDPKGDataDirectory {
-    return [NSString stringWithFormat:@"/%@/var/lib/dpkg", [NSString stringWithUTF8String:realpath(PREFIX.UTF8String,NULL)]];
+    return [NSString stringWithFormat:@"/%@/var/lib/dpkg", PREFIX];
 }
 
 - (NSDictionary *)getCapabilities {
