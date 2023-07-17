@@ -4,6 +4,7 @@ build_stage/
 build_work/
 build_dist/
 build_strap/
+build_pack/
 
 !.gitkeep
 .DS_Store

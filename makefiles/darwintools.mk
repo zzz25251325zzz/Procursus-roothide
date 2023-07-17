@@ -19,7 +19,6 @@ darwintools: darwintools-setup
 	+$(MAKE) -C $(BUILD_WORK)/darwintools all \
 		FIRMWARE_MAINTAINER="$(DEB_MAINTAINER)" \
 		PREFIX="$(MEMO_PREFIX)" \
-		CFLAGS="$(CFLAGS) -include jbroot.h " \
 		LDFLAGS="$(LDFLAGS) -ljbpath"
 	$(INSTALL) -Dm 0755 $(BUILD_WORK)/darwintools/build/firmware $(BUILD_STAGE)/darwintools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/firmware
 	$(INSTALL) -s -Dm 0755 $(BUILD_MISC)/darwintools/firmware-wrapper $(BUILD_STAGE)/darwintools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/firmware-wrapper
@@ -29,7 +28,7 @@ ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 	$(INSTALL) -s -Dm 0755 $(BUILD_WORK)/darwintools/sw_vers $(BUILD_STAGE)/darwintools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/sw_vers
 	$(INSTALL) -Dm 0644 $(BUILD_MISC)/darwintools/resolv.conf $(BUILD_STAGE)/darwintools/$(MEMO_PREFIX)/etc/resolv.conf
 endif
-	$(call AFTER_BUILD)
+	$(call AFTER_BUILD,,,,NO-SHIM)
 endif
 
 darwintools-package: darwintools-stage

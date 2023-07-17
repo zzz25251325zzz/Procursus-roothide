@@ -3,6 +3,8 @@
 
 #import <getopt.h>
 
+#include <jbroot.h>
+
 #define FIRMWARE_VERSION 7
 
 int main(int argc, char *argv[]) {

@@ -27,6 +27,7 @@ uikittools: uikittools-setup gettext
 		PREFIX="$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)" \
 		LOCALEDIR="$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/locale" \
 		APP_PATH="$(MEMO_PREFIX)/Applications" \
+		CFLAGS="$(CFLAGS) -ljbpath " \
 		NLS=1
 	+$(MAKE) -C $(BUILD_WORK)/uikittools install \
 		PREFIX="$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)" \
@@ -35,7 +36,7 @@ uikittools: uikittools-setup gettext
 		APP_PATH="$(MEMO_PREFIX)/Applications" \
 		NLS=1 \
 		$(UIKITTOOLS_MAKE_ARGS)
-	$(call AFTER_BUILD)
+	$(call AFTER_BUILD,,,,NO-SHIM)
 endif
 
 uikittools-package: uikittools-stage

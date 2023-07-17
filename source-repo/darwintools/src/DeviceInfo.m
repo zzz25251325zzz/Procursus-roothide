@@ -7,6 +7,8 @@
 #import <sys/utsname.h>
 #import <sys/types.h>
 
+#include <jbroot.h>
+
 @implementation DeviceInfo {
     struct utsname _systemInfo;
     NSString *_model;
@@ -160,7 +162,7 @@
 }
 
 - (NSString *)getDPKGDataDirectory {
-    return [NSString stringWithFormat:@"/%@/var/lib/dpkg", PREFIX];
+    return [NSString stringWithFormat:@"%@/var/lib/dpkg", PREFIX];
 }
 
 - (NSDictionary *)getCapabilities {

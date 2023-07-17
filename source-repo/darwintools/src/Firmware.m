@@ -4,6 +4,8 @@
 
 #import <spawn.h>
 
+#include <jbroot.h>
+
 @implementation Firmware {
     NSString *_dataDirectory;
     NSMutableString *_status;
@@ -54,7 +56,7 @@
     size_t len = 0;
     ssize_t read;
 
-    statusFile = fopen(statusFilePath, "r");
+    statusFile = fopen(jbroot(statusFilePath), "r");
     if (statusFile == NULL) {
         [self exitWithError:nil andMessage:[NSString stringWithFormat:@"Error opening statusfile for reading at: %s", statusFilePath]];
     }
@@ -193,8 +195,8 @@
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    NSString *userPath = [NSString stringWithFormat:@"/%@/User", PREFIX];
-    NSString *varMobileDirectory = [NSString stringWithFormat:@"/%@/var/mobile", PREFIX];
+    NSString *userPath = [NSString stringWithFormat:@"%@/User", PREFIX];
+    NSString *varMobileDirectory = [NSString stringWithFormat:@"%@/var/mobile", PREFIX];
 
     NSDictionary *userAttributes = [fileManager attributesOfItemAtPath:userPath error:nil];
 
@@ -205,7 +207,7 @@
         pid_t pid;
         extern char **environ;
 
-        NSString *prefixedCp = [NSString stringWithFormat:@"/%@/bin/cp", PREFIX];
+        NSString *prefixedCp = [NSString stringWithFormat:@"bin/cp", PREFIX];
         char *cpPath = (char *) [[prefixedCp stringByReplacingOccurrencesOfString:@"//" withString:@"/"] UTF8String];
 
         char *argv[] = {

@@ -30,7 +30,7 @@ var/{backups,cache,db,empty,lib/misc,local,lock,log,logs,mobile,msgs,preferences
 	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' < $(BUILD_MISC)/passwd/master.passwd > $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/master.passwd
 	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' < $(BUILD_MISC)/passwd/group > $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/group
 endif
-	$(LN_S) /rootfs/var/db/timezone/localtime $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/localtime
+	$(LN_S) $(MEMO_ROOTFS)/var/db/timezone/localtime $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/localtime
 	touch $(BUILD_STAGE)/base/$(MEMO_PREFIX)/var/run/utmp
 
 base-package: base-stage
