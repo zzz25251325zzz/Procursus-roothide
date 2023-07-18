@@ -121,7 +121,7 @@ LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           := /rootfs
 MEMO_PREFIX           ?= 
 MEMO_SUB_PREFIX       ?= /usr
-MEMO_ALT_PREFIX       ?=
+MEMO_ALT_PREFIX       ?= /local
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -1277,6 +1277,9 @@ endif
 	$$FAKEROOT chown 0:0 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/root; \
 	$$FAKEROOT chown 501:501 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile; \
 	$$FAKEROOT chmod 1777 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/tmp; \
+	for file in `ls $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/$(MEMO_SUB_PREFIX)/$(MEMO_ALT_PREFIX)/lib/`; do \
+		ln -s ../$(MEMO_ALT_PREFIX)/lib/$$file $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/$(MEMO_SUB_PREFIX)/lib/; \
+	done; \
 	while read link; do \
 		target=$$(readlink "$$link"); \
 		if echo "$$target" | grep -q ^$(MEMO_PREFIX)/ ; then \
