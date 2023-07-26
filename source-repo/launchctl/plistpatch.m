@@ -97,7 +97,7 @@ void patch_plist_file(char* path)
 	const char* Program = xpc_dictionary_get_string(service, "Program");
 	if(Program) {
 		assert(Program[0] == '/');
-		if(patched) Program = jbroot_revert(Program);
+		if(patched) Program = rootfs(Program);
 		xpc_dictionary_set_string(service, "Program", jbroot(Program));
 		xpc_dictionary_set_bool(service, "__Patched", true);
 	} else {
@@ -106,7 +106,7 @@ void patch_plist_file(char* path)
 			assert(xpc_array_get_count(ProgramArguments) > 0);
 			const char* arg0 = xpc_array_get_string(ProgramArguments, 0);
 			assert(arg0 && arg0[0]=='/');
-			if(patched) arg0 = jbroot_revert(arg0);
+			if(patched) arg0 = rootfs(arg0);
 			xpc_array_set_string(ProgramArguments, 0, jbroot(arg0));
 		    xpc_dictionary_set_bool(service, "__Patched", true);
 		}
@@ -128,7 +128,7 @@ void patch_plist(char* path)
         NSArray<NSURL *> *plistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:dirURL includingPropertiesForKeys:nil options:0 error:nil];
         for (NSURL *plistURL in plistURLs) {
             // contentsOfDirectory always return rootfs-based paths
-            patch_plist_file(jbroot_revert(plistURL.path.fileSystemRepresentation));
+            patch_plist_file(rootfs(plistURL.path.fileSystemRepresentation));
         }
     } else {
         patch_plist_file(path);

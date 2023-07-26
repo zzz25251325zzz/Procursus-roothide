@@ -1163,7 +1163,7 @@ bootstrap:: strapprojects
 	-if echo $(MEMO_TARGET) | grep "darwin"; then \
 		PKGS="apt/apt_*.deb brotli/libbrotli1_*.deb cacerts/ca-certificates_*.deb coreutils/coreutils_*.deb darwintools/darwintools_*.deb dpkg/dpkg_*.deb gnupg/gpgv_*.deb apt/libapt-pkg6.0_*.deb libassuan/libassuan0_*.deb libffi/libffi8_*.deb libgcrypt/libgcrypt20_*.deb libgmp10/libgmp10_*.deb gnutls/libgnutls30_*.deb libgpg-error/libgpg-error0_*.deb nettle/libhogweed6_*.deb libidn2/libidn2-0_*.deb gettext/libintl8_*.deb lz4/liblz4-1_*.deb xz/liblzma5_*.deb libmd/libmd0_*.deb nettle/libnettle8_*.deb npth/libnpth0_*.deb p11-kit/libp11-kit0_*.deb openssl/libssl3_*.deb libtasn1/libtasn1-6_*.deb libunistring/libunistring5_*.deb xxhash/libxxhash0_*.deb zlib-ng/libz-ng2_*.deb zstd/libzstd1_*.deb keyring/procursus-keyring_*.deb tar/tar_*.deb"; \
 	else \
-		PKGS="ldid/ldid_*.deb apt/apt_*.deb base/base_*.deb bash/bash_*.deb brotli/libbrotli1_*.deb cacerts/ca-certificates_*.deb chariz-keyring/chariz-keyring_*.deb coreutils/coreutils_*.deb darwintools/darwintools_*.deb dash/dash_*.deb debianutils/debianutils_*.deb diffutils/diffutils_*.deb diskdev-cmds/diskdev-cmds_*.deb dpkg/dpkg_*.deb essential/essential_*.deb file-cmds/file-cmds_*.deb findutils/findutils_*.deb firmware-sbin/firmware-sbin_*.deb gnupg/gpgv_*.deb grep/grep_*.deb havoc-keyring/havoc-keyring_*.deb launchctl/launchctl_*.deb apt/libapt-pkg6.0_*.deb libassuan/libassuan0_*.deb libxcrypt/libcrypt2_*.deb dimentio/libdimentio0_*.deb libedit/libedit0_*.deb libffi/libffi8_*.deb libgcrypt/libgcrypt20_*.deb libgmp10/libgmp10_*.deb gnutls/libgnutls30_*.deb libgpg-error/libgpg-error0_*.deb nettle/libhogweed6_*.deb libidn2/libidn2-0_*.deb gettext/libintl8_*.deb libiosexec/libiosexec1_*.deb libkrw/libkrw0_*.deb lz4/liblz4-1_*.deb xz/liblzma5_*.deb libmd/libmd0_*.deb ncurses/libncursesw6_*.deb nettle/libnettle8_*.deb npth/libnpth0_*.deb p11-kit/libp11-kit0_*.deb pam-modules/libpam-modules_*.deb openpam/libpam2_*.deb pcre/libpcre1_*.deb pcre2/libpcre2-8-0_*.deb readline/libreadline8_*.deb libtasn1/libtasn1-6_*.deb libunistring/libunistring5_*.deb xxhash/libxxhash0_*.deb zlib-ng/libz-ng2_*.deb zstd/libzstd1_*.deb ncurses/ncurses-bin_*.deb ncurses/ncurses-term_*.deb openssh/openssh-server_*.deb openssh/openssh-sftp-server_*.deb openssh/openssh-client_*.deb openssl/libssl3_*.deb keyring/procursus-keyring_*.deb profile.d/profile.d_*.deb sed/sed_*.deb shell-cmds/shell-cmds_*.deb shshd/shshd_*.deb snaputil/snaputil_*.deb sudo/sudo_*.deb system-cmds/system-cmds_*.deb tar/tar_*.deb uikittools/uikittools_*.deb vi/vi_*.deb zsh/zsh_*.deb"; \
+		PKGS="ldid/ldid_*.deb libplist/libplist3_*.deb apt/apt_*.deb base/base_*.deb bash/bash_*.deb brotli/libbrotli1_*.deb cacerts/ca-certificates_*.deb chariz-keyring/chariz-keyring_*.deb coreutils/coreutils_*.deb darwintools/darwintools_*.deb dash/dash_*.deb debianutils/debianutils_*.deb diffutils/diffutils_*.deb diskdev-cmds/diskdev-cmds_*.deb dpkg/dpkg_*.deb essential/essential_*.deb file-cmds/file-cmds_*.deb findutils/findutils_*.deb firmware-sbin/firmware-sbin_*.deb gnupg/gpgv_*.deb grep/grep_*.deb havoc-keyring/havoc-keyring_*.deb launchctl/launchctl_*.deb apt/libapt-pkg6.0_*.deb libassuan/libassuan0_*.deb libxcrypt/libcrypt2_*.deb dimentio/libdimentio0_*.deb libedit/libedit0_*.deb libffi/libffi8_*.deb libgcrypt/libgcrypt20_*.deb libgmp10/libgmp10_*.deb gnutls/libgnutls30_*.deb libgpg-error/libgpg-error0_*.deb nettle/libhogweed6_*.deb libidn2/libidn2-0_*.deb gettext/libintl8_*.deb libiosexec/libiosexec1_*.deb libkrw/libkrw0_*.deb lz4/liblz4-1_*.deb xz/liblzma5_*.deb libmd/libmd0_*.deb ncurses/libncursesw6_*.deb nettle/libnettle8_*.deb npth/libnpth0_*.deb p11-kit/libp11-kit0_*.deb pam-modules/libpam-modules_*.deb openpam/libpam2_*.deb pcre/libpcre1_*.deb pcre2/libpcre2-8-0_*.deb readline/libreadline8_*.deb libtasn1/libtasn1-6_*.deb libunistring/libunistring5_*.deb xxhash/libxxhash0_*.deb zlib-ng/libz-ng2_*.deb zstd/libzstd1_*.deb ncurses/ncurses-bin_*.deb ncurses/ncurses-term_*.deb openssh/openssh-server_*.deb openssh/openssh-sftp-server_*.deb openssh/openssh-client_*.deb openssl/libssl3_*.deb keyring/procursus-keyring_*.deb profile.d/profile.d_*.deb sed/sed_*.deb shell-cmds/shell-cmds_*.deb shshd/shshd_*.deb snaputil/snaputil_*.deb sudo/sudo_*.deb system-cmds/system-cmds_*.deb tar/tar_*.deb uikittools/uikittools_*.deb vi/vi_*.deb zsh/zsh_*.deb"; \
 	fi; \
 	export FAKEROOT='fakeroot -i $(BUILD_STAGE)/.fakeroot_bootstrap -s $(BUILD_STAGE)/.fakeroot_bootstrap --'; \
 	cd $(BUILD_STRAP); for DEB in $$PKGS; do \
@@ -1285,17 +1285,25 @@ endif
 		if echo "$$target" | grep -q ^$(MEMO_PREFIX)/ ; then \
 			rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
 		fi; \
-	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
-	while read dir; do \
+		dir=$$(dirname "$$link"); \
 		if [ ! -e "$$dir/.jbroot" ]; then \
 			ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
 		fi; \
-	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type d); \
+	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
+	while read file; do \
+		if [ $${file##*.} != "a" ] && [ $${file##*.} != "dSYM" ]; then \
+			dir=$$(dirname "$$file"); \
+			if [ ! -e "$$dir/.jbroot" ]; then \
+				ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+			fi; \
+		fi; \
+	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); \
 	rm -r $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev && ln -s /dev $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev; \
 	ln -s / $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/rootfs; \
 	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private; \
 	ln -s /private/preboot $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private/preboot; \
 	ln -s ../var $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private/var; \
+	ln -s ../tmp $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/tmp; \
 	ln -s /private/var/containers $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/containers; \
 	ln -s /private/var/mobile/Containers $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile/Containers; \
 	ln -s /etc/hosts $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/hosts; \
@@ -1308,9 +1316,9 @@ endif
 	ln -s /bin/df $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/bin/df; \
 	ln -s /var/run/utmpx $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/run/utmpx; \
 	ln -s /sbin/mount $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/sbin/mount; \
-	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/update_links.sh > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
-	chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.update_links.sh; \
-	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/sbin/updatelink $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/sbin/; \
+	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/updatelinks.sh > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh; \
+	chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh; \
+	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelink $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/; \
 	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpath.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
 	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpathapis.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
 	cd $(BUILD_STRAP)/strap && $$FAKEROOT tar -cf ../bootstrap.tar .

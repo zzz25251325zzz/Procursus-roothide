@@ -28,6 +28,12 @@ endif
 ifeq (,$(findstring ramdisk,$(MEMO_TARGET)))
 	sed -i 's/#UsePAM no/UsePAM yes/' $(BUILD_WORK)/openssh/sshd_config
 endif #(,$(findstring ramdisk,$(MEMO_TARGET)))
+ifneq (,$(MEMO_PREFIX))
+	sed -i 's|/usr/bin:/bin:/usr/sbin:/sbin|$(shell printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n" | tr ':' '\n' | sed "p; s|^|$(MEMO_PREFIX)|" | tr '\n' ':' | sed 's|:$$|\n|')|' $(BUILD_WORK)/openssh/defines.h
+endif
+ifneq (,$(MEMO_ROOTFS))
+	sed -i 's|/usr/bin:/bin:/usr/sbin:/sbin|$(shell printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n" | tr ':' '\n' | sed "p; s|^|$(MEMO_ROOTFS)|" | tr '\n' ':' | sed 's|:$$|\n|')|' $(BUILD_WORK)/openssh/defines.h
+endif
 
 ifneq ($(wildcard $(BUILD_WORK)/openssh/.build_complete),)
 openssh:

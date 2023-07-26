@@ -44,7 +44,11 @@ all: libiosexec.$(SOVER).dylib libiosexec.a
 	$(CC) -c $(CFLAGS) -fvisibility=hidden $<
 
 libiosexec_private.h: libiosexec_private.h.in
+ifneq (,$(SHEBANG_REDIRECT_PATH))
 	sed -e "s|@DEFAULT_PATH@|$(shell printf "%s\n" "$(DEFAULT_PATH)" | tr ':' '\n' | sed "p; s|^|$(SHEBANG_REDIRECT_PATH)|" | tr '\n' ':' | sed 's|:$$|\n|')|" -e "s|@SHEBANG_REDIRECT_PATH@|$(SHEBANG_REDIRECT_PATH)|" $^ > $@
+else
+	sed -e "s|@DEFAULT_PATH@|$(DEFAULT_PATH)|" -e "s|@SHEBANG_REDIRECT_PATH@|$(SHEBANG_REDIRECT_PATH)|" $^ > $@
+endif
 
 libiosexec.$(SOVER).dylib: $(SRC:%.c=%.o)
 ifeq ($(shell uname -s), Linux)
