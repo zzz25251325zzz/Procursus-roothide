@@ -9,8 +9,5 @@ build_pack/
 !.gitkeep
 .DS_Store
 *.p12
-_strapproject.sh
-_shimpatch.sh
-_installdeb.sh
+
 .source-repo/
-_signcheck.sh

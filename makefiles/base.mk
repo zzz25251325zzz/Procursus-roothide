@@ -33,6 +33,10 @@ endif
 	$(LN_S) $(MEMO_ROOTFS)/var/db/timezone/localtime $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/localtime
 	touch $(BUILD_STAGE)/base/$(MEMO_PREFIX)/var/run/utmp
 
+ifeq ($(ROOTHIDE),1)
+	rm -r $(BUILD_STAGE)/base/$(MEMO_PREFIX)/dev
+endif
+
 base-package: base-stage
 	# base.mk Package Structure
 	rm -rf $(BUILD_DIST)/base

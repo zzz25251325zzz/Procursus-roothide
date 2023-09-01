@@ -25,6 +25,7 @@ $(error Please run `umask 022` before running this)
 endif
 
 ROOTLESS             := y
+ROOTHIDE             := 1
 SSH_STRAP            := 0
 
 MEMO_TARGET          ?= darwin-arm64
@@ -101,9 +102,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -113,15 +116,16 @@ MEMO_DEPLOYMENT       := IPHONEOS_DEPLOYMENT_TARGET=$(IPHONEOS_DEPLOYMENT_TARGET
 else ifeq ($(MEMO_TARGET),iphoneos-arm64-rootless)
 MEMO_ARCH             := arm64
 PLATFORM              := iphoneos
-DEB_ARCH              := iphoneos-arm64
+DEB_ARCH              := iphoneos-arm64e
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
-MEMO_ROOTFS           := /rootfs
+MEMO_ROOTFS           :=/rootfs
 MEMO_PREFIX           ?= 
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= @loader_path/.jbroot
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -136,9 +140,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64e-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?= /var/jb
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?=
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -153,9 +159,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64e-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -170,9 +178,11 @@ GNU_HOST_TRIPLE       := armv7-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := armv7-apple-ios
 LLVM_TARGET           := armv7-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/iPhoneOS.sdk
@@ -187,9 +197,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mappletvos-version-min=$(APPLETVOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-tvos
 LLVM_TARGET           := arm64-apple-tvos$(APPLETVOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/AppleTVOS.sdk
@@ -204,9 +216,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mappletvos-version-min=$(APPLETVOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-tvos
 LLVM_TARGET           := arm64e-apple-tvos$(APPLETVOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/AppleTVOS.sdk
@@ -221,9 +235,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mappletvos-version-min=$(APPLETVOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-tvos
 LLVM_TARGET           := arm64-apple-tvos$(APPLETVOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/AppleTVOS.sdk
@@ -238,9 +254,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := --target=arm64-apple-bridgeos$(BRIDGEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-bridgeos
 LLVM_TARGET           := arm64-apple-bridgeos$(BRIDGEOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/BridgeOS.sdk
@@ -255,9 +273,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mwatchos-version-min=$(WATCHOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-watchos
 LLVM_TARGET           := arm64_32-apple-watchos$(WATCHOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/WatchOS.sdk
@@ -272,9 +292,11 @@ GNU_HOST_TRIPLE       := armv7k-apple-darwin
 PLATFORM_VERSION_MIN  := -mwatchos-version-min=$(WATCHOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := armv7k-apple-watchos
 LLVM_TARGET           := armv7k-apple-watchos$(WATCHOS_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
+MEMO_LOADER_PREFIX    ?= $(MEMO_PREFIX)
 MEMO_LAUNCHCTL_PREFIX ?= $(MEMO_PREFIX)
 GNU_PREFIX            :=
 ON_DEVICE_SDK_PATH    := $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/SDKs/WatchOS.sdk
@@ -289,9 +311,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
 LLVM_TARGET           := arm64e-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?= /opt/procursus
 MEMO_SUB_PREFIX       ?=
 MEMO_ALT_PREFIX       ?=
+MEMO_LOADER_PREFIX    ?=
 MEMO_LAUNCHCTL_PREFIX ?=
 GNU_PREFIX            := g
 ON_DEVICE_SDK_PATH    := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
@@ -306,9 +330,11 @@ GNU_HOST_TRIPLE       := aarch64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
 LLVM_TARGET           := arm64-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?= /opt/procursus
 MEMO_SUB_PREFIX       ?=
 MEMO_ALT_PREFIX       ?=
+MEMO_LOADER_PREFIX    ?=
 MEMO_LAUNCHCTL_PREFIX ?=
 GNU_PREFIX            := g
 ON_DEVICE_SDK_PATH    := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
@@ -323,9 +349,11 @@ GNU_HOST_TRIPLE       := x86_64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
 LLVM_TARGET           := x86_64-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
+MEMO_ROOTFS           :=
 MEMO_PREFIX           ?= /opt/procursus
 MEMO_SUB_PREFIX       ?=
 MEMO_ALT_PREFIX       ?=
+MEMO_LOADER_PREFIX    ?=
 MEMO_LAUNCHCTL_PREFIX ?=
 GNU_PREFIX            := g
 ON_DEVICE_SDK_PATH    := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
@@ -795,7 +823,7 @@ AFTER_BUILD = \
 		for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 			if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
 				INSTALL_NAME=$$($(OTOOL) -D $$file | grep -v -e ":$$" -e "^Archive :" | head -n1); \
-				if [ ! -z "$$INSTALL_NAME" ]; then \
+				if [ ! -z "$$INSTALL_NAME" ] && echo "$$INSTALL_NAME" | grep -q ^$(MEMO_PREFIX)/; then \
 					$(I_N_T) -id @rpath/$$(basename $$INSTALL_NAME) $$file; \
 					echo "$$INSTALL_NAME" >> $(BUILD_STAGE)/$$pkg/._lib_cache; \
 				fi; \
@@ -804,7 +832,7 @@ AFTER_BUILD = \
 	fi; \
 	for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 		if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
-			$(I_N_T) -add_rpath "@loader_path/.jbroot/$(MEMO_SUB_PREFIX)/lib" $$file; \
+			$(I_N_T) -add_rpath "$(MEMO_LOADER_PREFIX)$(MEMO_SUB_PREFIX)/lib" $$file; \
 			if [ ! -z "$(3)" ]; then \
 				$(I_N_T) -add_rpath "$(3)" $$file; \
 			fi; \
@@ -814,7 +842,7 @@ AFTER_BUILD = \
 				done; \
 			fi; \
 			$(STRIP) -x $$file; \
-			if [ -z "$(4)" ]; then $(BUILD_ROOT)/_shimpatch.sh $$file; fi; \
+			if [ -z "$(4)" ]; then symredirect $$file; fi; \
 		fi; \
 	done; \
 	rm -f $(BUILD_STAGE)/$$pkg/._lib_cache; \
@@ -1282,12 +1310,15 @@ endif
 	done; \
 	while read link; do \
 		target=$$(readlink "$$link"); \
+		if echo "$$target" | grep -q ^$(MEMO_ROOTFS)/ ; then \
+			rm "$$link" && ln -s $${target#$(MEMO_ROOTFS)} "$$link" ; \
+		fi; \
 		if echo "$$target" | grep -q ^$(MEMO_PREFIX)/ ; then \
 			rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
-		fi; \
-		dir=$$(dirname "$$link"); \
-		if [ ! -e "$$dir/.jbroot" ]; then \
-			ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+			dir=$$(dirname "$$link"); \
+			if [ ! -e "$$dir/.jbroot" ]; then \
+				ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+			fi; \
 		fi; \
 	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
 	while read file; do \
@@ -1298,29 +1329,6 @@ endif
 			fi; \
 		fi; \
 	done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); \
-	rm -r $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev && ln -s /dev $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/dev; \
-	ln -s / $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/rootfs; \
-	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private; \
-	ln -s /private/preboot $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private/preboot; \
-	ln -s ../var $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/private/var; \
-	ln -s ../tmp $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/tmp; \
-	ln -s /private/var/containers $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/containers; \
-	ln -s /private/var/mobile/Containers $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile/Containers; \
-	ln -s /etc/hosts $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/hosts; \
-	ln -s /etc/hosts.equiv $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/etc/hosts.equiv; \
-	ln -s /usr/share/misc/trace.codes $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/usr/share/misc/trace.codes; \
-	ln -s /usr/share/zoneinfo $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/usr/share/zoneinfo; \
-	mkdir -p $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/System/Library/CoreServices/; \
-	ln -s /System/Library/CoreServices/SystemVersion.plist $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/System/Library/CoreServices/SystemVersion.plist; \
-	ln -s /var/db/timezone $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/db/timezone; \
-	ln -s /bin/df $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/bin/df; \
-	ln -s /var/run/utmpx $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/run/utmpx; \
-	ln -s /sbin/mount $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/sbin/mount; \
-	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/updatelinks.sh > $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh; \
-	chmod +x $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh; \
-	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelink $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/; \
-	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpath.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
-	cp $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libjbpathapis.dylib $(BUILD_STRAP)/strap/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/; \
 	cd $(BUILD_STRAP)/strap && $$FAKEROOT tar -cf ../bootstrap.tar .
 	@if [[ "$(SSH_STRAP)" = 1 ]]; then \
 		BOOTSTRAP=bootstrap-ssh.tar.zst; \
@@ -1555,6 +1563,10 @@ ifneq ($(MEMO_NO_IOSEXEC),1)
 	@sed -i '1s/^/#include <libiosexec.h>\n/' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{unistd,pwd,grp}.h
 	@grep -q libiosexec.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/spawn.h || sed -i '1s/^/#include <libiosexec.h>\n/' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/spawn.h
 endif
+
+	@# Setup roothide
+	@cp -af $(BUILD_MISC)/libroothide/roothide.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/
+	@cp -af $(BUILD_MISC)/libroothide/libroothide.tbd $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 
 endif
 

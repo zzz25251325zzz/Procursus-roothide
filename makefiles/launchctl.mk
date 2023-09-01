@@ -19,7 +19,7 @@ launchctl: launchctl-setup
 	$(MAKE) -C $(BUILD_WORK)/launchctl install \
 		PREFIX="$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)" \
 		DESTDIR="$(BUILD_STAGE)/launchctl" \
-		LDFLAGS="$(LDFLAGS) -ljbpath "
+		LDFLAGS="$(LDFLAGS) -lroothide "
 ifneq ($(MEMO_SUB_PREFIX),)
 	$(LN_S) $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/launchctl $(BUILD_STAGE)/launchctl/$(MEMO_PREFIX)/bin/launchctl
 endif

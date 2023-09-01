@@ -4,7 +4,7 @@
 
 #import <spawn.h>
 
-#include <jbroot.h>
+#include <roothide.h>
 
 @implementation Firmware {
     NSString *_dataDirectory;

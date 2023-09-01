@@ -3,7 +3,7 @@
 
 #import <getopt.h>
 
-#include <jbroot.h>
+#include <roothide.h>
 
 #define FIRMWARE_VERSION 7
 

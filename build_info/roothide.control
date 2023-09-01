@@ -1,0 +1,8 @@
+Package: com.roothide.core
+Name: roothide
+Version: @DEB_ROOTHIDE_V@
+Architecture: @DEB_ARCH@
+Description: roothide core library
+Maintainer: roothide
+Author: roothide
+Section: System

@@ -6,7 +6,7 @@
 #import <objc/runtime.h>
 #import <stdio.h>
 
-#include <jbroot.h>
+#include <roothide.h>
 
 #if NLS
 #	include <libintl.h>

@@ -7,7 +7,7 @@
 #import <sys/utsname.h>
 #import <sys/types.h>
 
-#include <jbroot.h>
+#include <roothide.h>
 
 @implementation DeviceInfo {
     struct utsname _systemInfo;

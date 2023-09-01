@@ -2,7 +2,7 @@
 #include <xpc/xpc.h>
 #include <sys/stat.h>
 #include <assert.h>
-#include <jbroot.h>
+#include <roothide.h>
 #include "launchctl.h"
 
 NSObject* xpc_convert_to_nsobj(xpc_object_t in)
