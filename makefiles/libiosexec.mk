@@ -9,7 +9,8 @@ LIBIOSEXEC_VERSION := 1.3.1
 DEB_LIBIOSEXEC_V   ?= $(LIBIOSEXEC_VERSION)
 export DEB_LIBIOSEXEC_V
 
-ifneq (,$(findstring rootless,$(MEMO_TARGET)))
+#####???idk why but roothide need like this
+ifneq (,$(MEMO_ROOTLESS))
 LIBIOSEXEC_FLAGS   := SHEBANG_REDIRECT_PATH="$(MEMO_PREFIX)" \
 		      LIBIOSEXEC_PREFIXED_ROOT=1
 else

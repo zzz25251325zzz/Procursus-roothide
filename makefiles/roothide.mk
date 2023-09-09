@@ -6,6 +6,7 @@ ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 STRAPPROJECTS += roothide
 ROOTHIDE_VERSION  := 0.0.1
 DEB_ROOTHIDE_V    ?= $(ROOTHIDE_VERSION)
+export DEB_ROOTHIDE_V
 
 roothide-setup: setup
 	$(call GITHUB_ARCHIVE,RootHide,libroothide,$(ROOTHIDE_VERSION),$(ROOTHIDE_VERSION))
@@ -16,11 +17,8 @@ roothide:
 	@echo "Using previously built roothide."
 else
 roothide: roothide-setup base
-	mkdir -p $(BUILD_STAGE)/$(MEMO_PREFIX)/roothide/{var/mobile,etc,$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/{bin,sbin,lib,libexec}}
-
-	$(LN_S) $(MEMO_ROOTFS)/ $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/rootfs
-	$(LN_S) $(MEMO_ROOTFS)/dev $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/dev
-
+	mkdir -p $(BUILD_STAGE)/$(MEMO_PREFIX)/roothide/$(MEMO_PREFIX)/{var/mobile,etc,$(MEMO_SUB_PREFIX)/{bin,sbin,lib,libexec}}
+	
 	mkdir $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private
 	$(LN_S) $(MEMO_ROOTFS)/private/preboot $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private/preboot
 	$(LN_S) ../var $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private/var
@@ -53,10 +51,10 @@ roothide: roothide-setup base
 	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/updatelinks.sh > $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh
 	chmod +x $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh
 
-	
 	$(MAKE) -C $(BUILD_WORK)/libroothide clean
-	CFLAGS="$(CFLAGS) -DLIBIOSEXEC_INTERNAL" $(MAKE) -C $(BUILD_WORK)/libroothide all
+	CFLAGS="$(CFLAGS) -DLIBIOSEXEC_INTERNAL" LDFLAGS="$(subst,-liosexec,,$(LDFLAGS))" $(MAKE) -C $(BUILD_WORK)/libroothide all
 
+	cp -a $(BUILD_WORK)/libroothide/roothideinit.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 	cp -a $(BUILD_WORK)/libroothide/libroothide.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 	cp -a $(BUILD_WORK)/libroothide/libvroot.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 	cp -a $(BUILD_WORK)/libroothide/libvrootapi.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/

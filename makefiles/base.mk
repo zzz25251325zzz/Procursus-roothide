@@ -8,7 +8,8 @@ BASE_VERSION  := 1-6
 DEB_BASE_V    ?= $(BASE_VERSION)
 
 base:
-ifeq (,$(ROOTLESS))
+	rm -rf $(BUILD_STAGE)/base
+ifeq (,$(MEMO_ROOTLESS))
 	mkdir -p \
 		$(BUILD_STAGE)/base/$(MEMO_PREFIX)/{Applications,bin,boot,dev,lib,mnt,sbin,tmp,\
 etc/{default,profile.d},\
@@ -33,8 +34,10 @@ endif
 	$(LN_S) $(MEMO_ROOTFS)/var/db/timezone/localtime $(BUILD_STAGE)/base/$(MEMO_PREFIX)/etc/localtime
 	touch $(BUILD_STAGE)/base/$(MEMO_PREFIX)/var/run/utmp
 
-ifeq ($(ROOTHIDE),1)
+ifneq (,$(findstring roothide,$(MEMO_TARGET)))
 	rm -r $(BUILD_STAGE)/base/$(MEMO_PREFIX)/dev
+	$(LN_S) $(MEMO_ROOTFS)/dev $(BUILD_STAGE)/base/$(MEMO_PREFIX)/dev
+	$(LN_S) $(MEMO_ROOTFS)/ $(BUILD_STAGE)/base/$(MEMO_PREFIX)$(MEMO_ROOTFS)
 endif
 
 base-package: base-stage
@@ -47,7 +50,7 @@ base-package: base-stage
 	$(FAKEROOT) chmod 0644 $(BUILD_DIST)/base/$(MEMO_PREFIX)/var/run/utmp
 	$(FAKEROOT) chown 0:1 $(BUILD_DIST)/base/$(MEMO_PREFIX)/var/run
 	$(FAKEROOT) chown 0:3 $(BUILD_DIST)/base/$(MEMO_PREFIX)/var/empty
-ifeq (,$(ROOTLESS))
+ifeq (,$(MEMO_ROOTLESS))
 	$(FAKEROOT) chown 0:80 $(BUILD_DIST)/base/{,Applications,Library/{,Frameworks,Preferences,Ringtones,Wallpaper},etc,tmp,var/{,db}}
 	$(FAKEROOT) chown 0:20 $(BUILD_DIST)/base/var/local
 	$(FAKEROOT) chown -R 501:501 $(BUILD_DIST)/base/var/mobile
