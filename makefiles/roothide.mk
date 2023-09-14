@@ -48,9 +48,6 @@ roothide: roothide-setup base
 	mkdir -p $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/System/Library/CoreServices/
 	$(LN_S) $(MEMO_ROOTFS)/System/Library/CoreServices/SystemVersion.plist $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/System/Library/CoreServices/SystemVersion.plist
 
-	sed -e 's|@MEMO_PREFIX@|$(MEMO_PREFIX)|g' -e 's|@MEMO_SUB_PREFIX@|$(MEMO_SUB_PREFIX)|g' $(BUILD_MISC)/updatelinks.sh > $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh
-	chmod +x $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/updatelinks.sh
-
 	$(MAKE) -C $(BUILD_WORK)/libroothide clean
 	CFLAGS="$(CFLAGS) -DLIBIOSEXEC_INTERNAL" LDFLAGS="$(subst,-liosexec,,$(LDFLAGS))" $(MAKE) -C $(BUILD_WORK)/libroothide all
 
@@ -59,6 +56,7 @@ roothide: roothide-setup base
 	cp -a $(BUILD_WORK)/libroothide/libvroot.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 	cp -a $(BUILD_WORK)/libroothide/libvrootapi.dylib	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 	cp -a $(BUILD_WORK)/libroothide/updatelink	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/
+	cp -a $(BUILD_WORK)/libroothide/updatelinks.sh	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/
 	cp -a $(BUILD_WORK)/libroothide/jbrand	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 	cp -a $(BUILD_WORK)/libroothide/jbroot	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 	cp -a $(BUILD_WORK)/libroothide/rootfs	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/

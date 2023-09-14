@@ -139,7 +139,7 @@ PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?= /rootfs
-MEMO_PREFIX           ?= 
+MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
 MEMO_LINK_PREFIX      ?= @loader_path/.jbroot
@@ -179,7 +179,7 @@ PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
 LLVM_TARGET           := arm64e-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?= /rootfs
-MEMO_PREFIX           ?= 
+MEMO_PREFIX           ?=
 MEMO_SUB_PREFIX       ?= /usr
 MEMO_ALT_PREFIX       ?= /local
 MEMO_LINK_PREFIX      ?= @loader_path/.jbroot
@@ -1357,6 +1357,7 @@ endif
 	$$FAKEROOT chown 501:501 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/var/mobile; \
 	$$FAKEROOT chmod 1777 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/tmp; \
 	if [ ! -z "$(findstring roothide,$(MEMO_TARGET))" ]; then \
+		ln -s . $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/.jbroot ; \
 		for file in `ls $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/$(MEMO_SUB_PREFIX)/$(MEMO_ALT_PREFIX)/lib/`; do \
 			ln -s ../$(MEMO_ALT_PREFIX)/lib/$$file $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/$(MEMO_SUB_PREFIX)/lib/; \
 		done; \
@@ -1367,16 +1368,16 @@ endif
 			elif echo "$$target" | grep -q ^$(MEMO_PREFIX)/ ; then \
 				rm "$$link" && ln -s .jbroot$${target#$(MEMO_PREFIX)} "$$link" ; \
 				dir=$$(dirname "$$link"); \
-				if [ ! -e "$$dir/.jbroot" ]; then \
-					ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+				if [ ! -L "$$dir/.jbroot" ]; then \
+					ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX))/.jbroot "$$dir/.jbroot" ; \
 				fi; \
 			fi; \
 		done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type l); \
 		while read file; do \
 			if [ $${file##*.} != "a" ] && [ $${file##*.} != "dSYM" ]; then \
 				dir=$$(dirname "$$file"); \
-				if [ ! -e "$$dir/.jbroot" ]; then \
-					ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX)) "$$dir/.jbroot" ; \
+				if [ ! -L "$$dir/.jbroot" ]; then \
+					ln -s $$(realpath --relative-to="$$dir" $(BUILD_STRAP)/strap/$(MEMO_PREFIX))/.jbroot "$$dir/.jbroot" ; \
 				fi; \
 			fi; \
 		done <<<  $$(find $(BUILD_STRAP)/strap/$(MEMO_PREFIX) -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); \

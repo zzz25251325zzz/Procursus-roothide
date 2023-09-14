@@ -18,5 +18,9 @@
 		<string>kTCCServiceMicrophone</string>
 		<string>kTCCServiceCamera</string>
 	</array>
+	<key>com.apple.private.security.storage.AppBundles</key>
+	<true/>
+	<key>com.apple.private.security.storage.AppDataContainers</key>
+	<true/>
 </dict>
 </plist>

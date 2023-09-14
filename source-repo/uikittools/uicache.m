@@ -139,7 +139,7 @@ Modified work Copyright (C) 2021, Procursus Team. All Rights Reserved.\n\n"), ge
 	printf(_("  -f, --force              Force -a to reregister all Applications\n\
 							  and modify App Store apps\n"));
 	printf(_("  -p, --path <path>        Update application bundle at the specified path\n"));
-	printf(_("  -s, --force-system       When registering an app inside /var/containers/Bundle/Application, register it as system\n"));
+	printf(_("  -s, --force-system       When registering an app with path /var/containers/Bundle/Application/<UUID>/*.app, register it as system\n"));
 	printf(_("  -u, --unregister <path>  Unregister application bundle at the specified path\n"));
 	printf(_("  -r, --respring           Restart SpringBoard and backboardd after\n\
 							  updating applications\n"));
@@ -277,7 +277,7 @@ BOOL constructContainerizationForEntitlements(NSString* path, NSDictionary *enti
 	//
 	// }
 
-	// containers/Bundle/ always containerized by default
+	// apps in containers/Bundle/ always containerized by default
 	if([path hasPrefix:@"/var/containers/Bundle/"] || [path hasPrefix:@"/private/var/containers/Bundle/"])
 		return YES;
 
@@ -302,6 +302,32 @@ NSDictionary *constructEnvironmentVariablesForContainerPath(NSString *containerP
 	};
 }
 
+
+#define APP_PATH_PREFIX "/private/var/containers/Bundle/Application/"
+
+BOOL isDefaultInstallationPath(NSString* _path)
+{
+	if(!_path) return NO;
+
+	const char* path = _path.UTF8String;
+	
+	char rp[PATH_MAX];
+	if(!realpath(path, rp)) return NO;
+
+	if(strncmp(rp, APP_PATH_PREFIX, sizeof(APP_PATH_PREFIX)-1) != 0)
+		return NO;
+
+	char* p1 = rp + sizeof(APP_PATH_PREFIX)-1;
+	char* p2 = strchr(p1, '/');
+	if(!p2) return NO;
+
+	//is normal app or jailbroken app/daemon? 
+	if((p2 - p1) != (sizeof("xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx")-1))
+		return NO;
+
+	return YES;
+}
+
 void registerPath(NSString *path, BOOL forceSystem)
 {
 	LSApplicationWorkspace *workspace = [LSApplicationWorkspace defaultWorkspace];
@@ -317,7 +343,7 @@ void registerPath(NSString *path, BOOL forceSystem)
 	}
 
 	BOOL isRemovableSystemApp = [[NSFileManager defaultManager] fileExistsAtPath:[@"/System/Library/AppSignatures" stringByAppendingPathComponent:appBundleID]];
-	BOOL registerAsUser = [path hasPrefix:@"/var/containers/Bundle/Application"] && !isRemovableSystemApp && !forceSystem;
+	BOOL registerAsUser = isDefaultInstallationPath(path) && !isRemovableSystemApp && !forceSystem;
 
 	NSMutableDictionary *dictToRegister = [NSMutableDictionary dictionary];
 
@@ -614,8 +640,7 @@ void registerAll(void) {
 		//ios app default storage directory, others are jailbroken apps
 		if ( ![appPath hasPrefix:@"/Applications/"]
 			&& ![appPath hasPrefix:@"/Developer/Applications/"]
-			&& ![appPath hasPrefix:@"/var/containers/Bundle/Application/"]
-			&& ![appPath hasPrefix:@"/private/var/containers/Bundle/Application/"]
+			&& !isDefaultInstallationPath(appPath)
 			) {
 			registeredApps[app.bundleIdentifier] = app.bundleURL;
 		}

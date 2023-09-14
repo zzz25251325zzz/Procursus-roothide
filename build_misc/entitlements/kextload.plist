@@ -46,5 +46,9 @@
 	<true/>
 	<key>com.apple.private.system-extensions.extension-point</key>
 	<true/>
+	<key>com.apple.private.security.storage.AppBundles</key>
+	<true/>
+	<key>com.apple.private.security.storage.AppDataContainers</key>
+	<true/>
 </dict>
 </plist>
