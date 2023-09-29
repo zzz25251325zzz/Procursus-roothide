@@ -525,7 +525,7 @@ CXX_FOR_BUILD := $(shell command -v c++) $(CXXFLAGS_FOR_BUILD)
 AR_FOR_BUILD  := $(shell command -v ar)
 export CC_FOR_BUILD CPP_FOR_BUILD CXX_FOR_BUILD AR_FOR_BUILD
 
-DEB_MAINTAINER    ?= Procursus Team <support@procurs.us>
+DEB_MAINTAINER    ?= RootHide (@RootHideDev on twitter)
 MEMO_REPO_URI     ?= https://apt.procurs.us
 MEMO_PGP_SIGN_KEY ?= C59F3798A305ADD7E7E6C7256430292CF9551B0E
 CODESIGN_IDENTITY ?= -
@@ -782,7 +782,7 @@ CHECKSUM_VERIFY = if [ "$(1)" = "sha1" -o "$(1)" = "sha1sum" ]; then \
 		fi
 
 EXTRACT_TAR = -if [ ! -d $(BUILD_WORK)/$(3) ] || [ "$(4)" = "1" ]; then \
-		if [ -d $(BUILD_ROOT)/source-repo/$(3) ]; then \
+		if [ -d $(BUILD_ROOT)/source-repo/$(3) ] &&  [ "$(4)" = "" ]; then \
 			echo "using exists source: $(3)"; \
 			cp -a $(BUILD_ROOT)/source-repo/$(3) $(BUILD_WORK)/$(3); \
 		else \
@@ -1618,11 +1618,9 @@ ifneq ($(MEMO_NO_IOSEXEC),1)
 endif
 
 	@# Setup roothide
-	@mkdir -p $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/libroothide
-	@cp -af $(BUILD_MISC)/libroothide/roothide.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/
-	# @cp -af $(BUILD_MISC)/libroothide/libroothide.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/libroothide/
-	# @cp -af $(BUILD_MISC)/libroothide/libroothide_stub.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/libroothide/
-	@cp -af $(BUILD_MISC)/libroothide/libroothide.tbd $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
+	@mkdir -p $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/roothide
+	@cp -af $(BUILD_MISC)/roothide/roothide.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/
+	@cp -af $(BUILD_MISC)/roothide/*.tbd $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/
 
 endif
 

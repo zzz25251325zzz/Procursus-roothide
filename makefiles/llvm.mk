@@ -217,7 +217,7 @@ endif
 	$(CC) $(CFLAGS) $(LDFLAGS) $(BUILD_MISC)/llvm/wrapper.c -o $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/swiftc-$(SWIFT_VERSION) \
 		-DTOOL=\"$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/bin/swiftc\" -DDEFAULT_SYSROOT=\"$(ON_DEVICE_SDK_PATH)\" \
 		-DEXTRA_CPATH=\"$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include\" -DEXTRA_LIBRARY_PATH=\"$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib\"
-	$(call AFTER_BUILD,,,$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/lib)
+	$(call AFTER_BUILD,,,$(MEMO_LINK_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/lib)
 endif
 
 llvm-package: llvm-stage

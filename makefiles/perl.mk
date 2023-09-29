@@ -12,7 +12,7 @@ DEB_PERL_V   ?= $(PERL_VERSION)
 export PERL_MAJOR
 
 perl-setup: setup
-	$(call DOWNLOAD_FILES,$(BUILD_SOURCE) https://www.cpan.org/src/5.0/perl-$(PERL_VERSION).tar.gz, \
+	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://www.cpan.org/src/5.0/perl-$(PERL_VERSION).tar.gz \
 		https://github.com/arsv/perl-cross/releases/download/$(PERL_CROSS_V)/perl-cross-$(PERL_CROSS_V).tar.gz)
 	rm -rf $(BUILD_WORK)/perl
 	$(call EXTRACT_TAR,perl-$(PERL_VERSION).tar.gz,perl-$(PERL_VERSION),perl)
@@ -74,7 +74,7 @@ perl: perl-setup
 		DESTDIR=$(BUILD_STAGE)/perl
 	$(LN_S) $(PERL_MAJOR) $(BUILD_STAGE)/perl/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/perl5/$(PERL_VERSION)
 	chmod -R u+w $(BUILD_STAGE)/perl/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/perl5/$(PERL_MAJOR)
-	$(call AFTER_BUILD)
+	$(call AFTER_BUILD,,,$(MEMO_LINK_PREFIX)$(MEMO_SUB_PREFIX)/lib/perl5/$(PERL_MAJOR)/CORE)
 endif
 
 perl-package: perl-stage
