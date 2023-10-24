@@ -10,7 +10,7 @@ SUBPROJECTS   += rar
 RAR_VERSION   := 6.1
 RAR_BUILD     := 610
 DEB_RAR_V     ?= $(RAR_VERSION)
-DEBIAN_RAR_V  := 5.5.0-1.1
+DEBIAN_RAR_V  := 6.23-1~deb11u1
 
 # XXX: needs severe cleaning
 
@@ -39,7 +39,7 @@ ifeq ($(MEMO_ARCH),arm64)
 	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://www.rarlab.com/rar/rarmacos-arm-$(RAR_BUILD).tar.gz)
 	tar -C $(BUILD_WORK) -xf $(BUILD_SOURCE)/rarmacos-arm-$(RAR_BUILD).tar.gz
 endif
-	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),http://deb.debian.org/debian/pool/non-free/r/rar/rar_$(DEBIAN_RAR_V).debian.tar.xz)
+	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),http://ftp.debian.org/debian/pool/non-free/r/rar/rar_$(DEBIAN_RAR_V).debian.tar.xz)
 	tar -C $(BUILD_WORK)/rar -xJf $(BUILD_SOURCE)/rar_$(DEBIAN_RAR_V).debian.tar.xz
 	mkdir -p $(BUILD_STAGE)/rar/$(MEMO_PREFIX){$(MEMO_SUB_PREFIX)/{bin,lib,share/man/man1},/etc}
 

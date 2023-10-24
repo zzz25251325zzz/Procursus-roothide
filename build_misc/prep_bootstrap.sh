@@ -26,6 +26,5 @@ if [ -z "$NO_PASSWORD_PROMPT" ]; then
     done
     printf "%s\n" "$PASSWORD1" | @MEMO_PREFIX@@MEMO_SUB_PREFIX@/sbin/pw usermod 501 -h 0
 fi
-#printf "%s\n" "alpine" | @MEMO_PREFIX@@MEMO_SUB_PREFIX@/sbin/pw usermod root -h 0
 
 rm -f @MEMO_PREFIX@/prep_bootstrap.sh

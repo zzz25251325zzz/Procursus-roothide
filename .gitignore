@@ -5,9 +5,9 @@ build_work/
 build_dist/
 build_strap/
 build_pack/
+source-repo/
+
 
 !.gitkeep
 .DS_Store
 *.p12
-
-.source-repo/

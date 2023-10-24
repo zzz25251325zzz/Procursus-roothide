@@ -525,7 +525,7 @@ CXX_FOR_BUILD := $(shell command -v c++) $(CXXFLAGS_FOR_BUILD)
 AR_FOR_BUILD  := $(shell command -v ar)
 export CC_FOR_BUILD CPP_FOR_BUILD CXX_FOR_BUILD AR_FOR_BUILD
 
-DEB_MAINTAINER    ?= RootHide (@RootHideDev on twitter)
+DEB_MAINTAINER    ?= RootHide <RootHideDev@twitter>
 MEMO_REPO_URI     ?= https://apt.procurs.us
 MEMO_PGP_SIGN_KEY ?= C59F3798A305ADD7E7E6C7256430292CF9551B0E
 CODESIGN_IDENTITY ?= -
