@@ -4,7 +4,7 @@ endif
 
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 STRAPPROJECTS += roothide
-ROOTHIDE_VERSION  := 0.0.5
+ROOTHIDE_VERSION  := 0.0.6
 DEB_ROOTHIDE_V    ?= $(ROOTHIDE_VERSION)
 export DEB_ROOTHIDE_V
 

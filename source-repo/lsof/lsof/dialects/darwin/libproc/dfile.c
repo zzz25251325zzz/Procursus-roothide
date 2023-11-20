@@ -694,7 +694,6 @@ process_vnode(pid, fd)
 	     */
 		enter_nm("(revoked)");
 	    } else
-		fprintf(stderr,"=%d/%d\n", pid, fd);
 		(void) err2nm("vnode");
 	    return;
 	} else if (nb < sizeof(vi)) {

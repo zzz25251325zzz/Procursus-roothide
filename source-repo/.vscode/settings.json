@@ -21,6 +21,11 @@
         "*.inc": "c",
         "availability.h": "c",
         "assert.h": "c",
-        "fcntl.h": "c"
+        "fcntl.h": "c",
+        "*.in": "cpp",
+        "coroutine": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "*.txt": "cpp"
     }
 }

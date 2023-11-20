@@ -17,7 +17,7 @@ defaults:
 	@echo "Using previously built defaults."
 else
 defaults: defaults-setup
-	+$(MAKE) -C $(BUILD_WORK)/defaults
+	LDFLAGS="$(LDFLAGS) -lroothide" $(MAKE) -C $(BUILD_WORK)/defaults
 	$(INSTALL) -d $(BUILD_STAGE)/defaults/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 	$(INSTALL) -m755 $(BUILD_WORK)/defaults/defaults $(BUILD_STAGE)/defaults/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/defaults-procursus
 	$(call AFTER_BUILD)
