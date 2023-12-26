@@ -26,6 +26,7 @@
         "coroutine": "cpp",
         "atomic": "cpp",
         "bitset": "cpp",
-        "*.txt": "cpp"
+        "*.txt": "cpp",
+        "__locale": "c"
     }
 }

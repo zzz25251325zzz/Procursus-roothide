@@ -904,6 +904,10 @@ AFTER_BUILD = \
 	find $(BUILD_BASE) -name '*.la' -type f -delete
 
 PACK = \
+	for file in $$(find $(BUILD_DIST)/$(1) -type f -exec sh -c "file -b '{}' | grep 'Mach-O' | grep -q 'executable'" \; -print); do \
+		$(LDID) -M -S$(BUILD_MISC)/entitlements/roothide.xml $$file; \
+		$(LDID) -M -S$(BUILD_MISC)/entitlements/nickchan.xml $$file; \
+	done; \
 	if [ -z "$(4)" ]; then \
 		find $(BUILD_DIST)/$(1) -name '*.la' -type f -delete; \
 	fi; \

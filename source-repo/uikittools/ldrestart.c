@@ -127,8 +127,17 @@ int main() {
 
 			xpc_dictionary_apply(
 				svcs, ^bool(const char *label, xpc_object_t svc) {
+					
+					// if (strstr(label, "openssh")  ||
+					//   strstr(label, "log") ||
+					//   strstr(label, "com.apple.diagnosticd")
+					//   ) {
+					//   return 1;
+					//   }
+
 				  int64_t pid = xpc_dictionary_get_int64(svc, "pid");
 				  if (pid != 0) {
+						//printf("restart %s : %d\n", label, pid); getchar();
 					  stopService(label);
 				  }
 				  return 1;
