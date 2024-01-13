@@ -525,7 +525,7 @@ CXX_FOR_BUILD := $(shell command -v c++) $(CXXFLAGS_FOR_BUILD)
 AR_FOR_BUILD  := $(shell command -v ar)
 export CC_FOR_BUILD CPP_FOR_BUILD CXX_FOR_BUILD AR_FOR_BUILD
 
-DEB_MAINTAINER    ?= RootHide <RootHideDev@twitter>
+DEB_MAINTAINER    ?= roothide <roothideDev@twitter>
 MEMO_REPO_URI     ?= https://apt.procurs.us
 MEMO_PGP_SIGN_KEY ?= C59F3798A305ADD7E7E6C7256430292CF9551B0E
 CODESIGN_IDENTITY ?= -
@@ -864,7 +864,7 @@ AFTER_BUILD = \
 		for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 			if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
 				INSTALL_NAME=$$($(OTOOL) -D $$file | grep -v -e ":$$" -e "^Archive :" | head -n1); \
-				if [ ! -z "$$INSTALL_NAME" ] && echo "$$INSTALL_NAME" | grep -q ^$(MEMO_PREFIX)/; then \
+				if [ ! -z "$$INSTALL_NAME" ] && ( ( echo "$$INSTALL_NAME" | grep -q ^$(MEMO_PREFIX)/ ) || ! ( echo "$$INSTALL_NAME" | grep -q / ) ); then \
 					$(I_N_T) -id @rpath/$$(basename $$INSTALL_NAME) $$file; \
 					echo "$$INSTALL_NAME" >> $(BUILD_STAGE)/$$pkg/._lib_cache; \
 				fi; \

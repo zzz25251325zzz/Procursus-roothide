@@ -36,6 +36,7 @@
 - (_LSApplicationState *)appState;
 - (NSURL *)bundleURL;
 - (NSURL *)containerURL;
+- (NSURL *)dataContainerURL;
 - (NSString *)bundleExecutable;
 - (NSString *)bundleIdentifier;
 - (NSString *)vendorName;
@@ -274,6 +275,12 @@ BOOL constructContainerizationForEntitlements(NSString* path, NSDictionary *enti
 	NSNumber *noSandbox = entitlements[@"com.apple.private.security.no-sandbox"];
 	if (noSandbox && [noSandbox isKindOfClass:[NSNumber class]]) {
 		if (noSandbox.boolValue) {
+
+			NSNumber*AppDataContainers = entitlements[@"com.apple.private.security.storage.AppDataContainers"];
+			if (AppDataContainers && [AppDataContainers isKindOfClass:[NSNumber class]]) {
+				if (AppDataContainers.boolValue) return YES; //hack way
+			}
+			
 			return NO;
 		}
 	}
@@ -300,8 +307,8 @@ NSString *constructTeamIdentifierForEntitlements(NSDictionary *entitlements) {
 }
 
 NSDictionary *constructEnvironmentVariablesForContainerPath(NSString *containerPath, BOOL isContainerized) {
-	NSString *homeDir = isContainerized ? containerPath : jbroot(@"/var/mobile");
-	NSString *tmpDir = isContainerized ? [containerPath stringByAppendingPathComponent:@"tmp"] : jbroot(@"/var/tmp");
+	NSString *homeDir = isContainerized ? containerPath : @"/var/mobile";
+	NSString *tmpDir = isContainerized ? [containerPath stringByAppendingPathComponent:@"tmp"] : @"/var/tmp";
 	return @{
 		@"CFFIXED_USER_HOME" : homeDir,
 		@"HOME" : homeDir,
@@ -636,6 +643,7 @@ void infoForBundleID(NSString *bundleID) {
 		printf(_("Executable Name: %s\n"), [[app bundleExecutable] UTF8String]);
 		printf(_("Path: %s\n"), [[app bundleURL] fileSystemRepresentation]);
 		printf(_("Container Path: %s\n"), [[app containerURL] fileSystemRepresentation]);
+		printf(_("Data Container Path: %s\n"), [[app dataContainerURL] fileSystemRepresentation]);
 		printf(_("Vendor Name: %s\n"), [[app vendorName] UTF8String]);
 		printf(_("Team ID: %s\n"), [[app teamID] UTF8String]);
 		printf(_("Type: %s\n"), [[app applicationType] UTF8String]);
