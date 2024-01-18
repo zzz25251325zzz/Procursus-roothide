@@ -6,7 +6,7 @@ NGINX_VERSION := 1.21.5
 DEB_NGINX_V   ?= $(NGINX_VERSION)-5
 
 ifeq ($(UNAME),Darwin)
-CC := /usr/bin/cc
+# CC := /usr/bin/cc
 endif
 
 # for ngx_shm_alloc
@@ -74,6 +74,7 @@ nginx:
 	@echo "Using previously built nginx."
 else
 nginx: nginx-setup
+	$(error "please set cc to /usr/bin/cc")
 	# do an config for the build machine and then sed out the cflags
 	# because nginxs build system doesnt support cross compiling
 

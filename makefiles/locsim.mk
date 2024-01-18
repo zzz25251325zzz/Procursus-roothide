@@ -21,7 +21,7 @@ else
 locsim: locsim-setup
 	$(CC) $(CFLAGS) $(LDFLAGS) $(BUILD_WORK)/locsim/{main,LSMGPXParserDelegate}.m \
 		-o $(BUILD_STAGE)/locsim/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/locsim \
-		-fobjc-arc -framework Foundation -framework CoreLocation
+		-fobjc-arc -framework Foundation -framework CoreLocation -lroothide
 	$(call AFTER_BUILD)
 endif
 

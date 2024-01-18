@@ -883,7 +883,7 @@ AFTER_BUILD = \
 				done; \
 			fi; \
 			$(STRIP) -x $$file; \
-			if [ -z "$(4)" ]; then symredirect $$file; fi; \
+			if [ -z "$(4)" ]; then symredirect $$file || exit 1; fi; \
 		fi; \
 	done; \
 	rm -f $(BUILD_STAGE)/$$pkg/._lib_cache; \

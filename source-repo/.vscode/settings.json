@@ -27,6 +27,9 @@
         "atomic": "cpp",
         "bitset": "cpp",
         "*.txt": "cpp",
-        "__locale": "c"
+        "__locale": "c",
+        "*.pc": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }
