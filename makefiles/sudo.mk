@@ -38,6 +38,7 @@ endif
 		--with-vardir=$(MEMO_PREFIX)/var/db/sudo \
 		--with-rundir=$(MEMO_PREFIX)/var/run/sudo \
 		sudo_cv___func__=yes \
+		ax_cv_check_ldflags___Wl__force_flat_namespace=no \
 		ac_cv_have_working_snprintf=yes \
 		ac_cv_have_working_vsnprintf=yes
 	sed -i 's/-Wc,-static-libgcc/ /g' $(BUILD_WORK)/sudo/{src,,plugins/*,logsrvd,lib/util}/Makefile
