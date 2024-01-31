@@ -16,6 +16,7 @@ libassuan:
 	@echo "Using previously built libassuan."
 else
 libassuan: libassuan-setup libgpg-error
+	sed -i ':a;N;$$!ba;s|\n\t10\.\*)\n\(\s*_lt_dar_allow_undefined\)|\n\t*)\n\1|g' $(BUILD_WORK)/libassuan/configure
 	cd $(BUILD_WORK)/libassuan && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--with-gpg-error-prefix=$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)

@@ -16,6 +16,7 @@ npth:
 	@echo "Using previously built npth."
 else
 npth: npth-setup
+	sed -i ':a;N;$$!ba;s|\n\t10\.\*)\n\(\s*_lt_dar_allow_undefined\)|\n\t*)\n\1|g' $(BUILD_WORK)/uuid/configure
 	cd $(BUILD_WORK)/npth && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS)
 	+$(MAKE) -C $(BUILD_WORK)/npth

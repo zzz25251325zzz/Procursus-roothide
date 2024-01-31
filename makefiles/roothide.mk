@@ -2,22 +2,30 @@ ifneq ($(PROCURSUS),1)
 $(error Use the main Makefile)
 endif
 
-ifeq (,$(findstring darwin,$(MEMO_TARGET)))
+ifneq (,$(findstring roothide,$(MEMO_TARGET)))
 STRAPPROJECTS += roothide
+else
+SUBPROJECTS += roothide
+endif
+
 ROOTHIDE_VERSION  := 0.0.6
 DEB_ROOTHIDE_V    ?= $(ROOTHIDE_VERSION)
 export DEB_ROOTHIDE_V
 
 roothide-setup: setup
-	$(call GITHUB_ARCHIVE,RootHide,libroothide,$(ROOTHIDE_VERSION),$(ROOTHIDE_VERSION))
+	$(call GITHUB_ARCHIVE,roothide,libroothide,$(ROOTHIDE_VERSION),$(ROOTHIDE_VERSION))
 	$(call EXTRACT_TAR,libroothide-$(ROOTHIDE_VERSION).tar.gz,libroothide-$(ROOTHIDE_VERSION),libroothide)
 
 ifneq ($(wildcard $(BUILD_WORK)/roothide/.build_complete),)
 roothide:
 	@echo "Using previously built roothide."
 else
+ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 roothide: roothide-setup base
-	mkdir -p $(BUILD_STAGE)/$(MEMO_PREFIX)/roothide/$(MEMO_PREFIX)/{var/mobile,etc,$(MEMO_SUB_PREFIX)/{bin,sbin,lib,libexec}}
+else
+roothide: roothide-setup
+endif
+	mkdir -p $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/{var/mobile,etc,$(MEMO_SUB_PREFIX)/{bin,sbin,lib,libexec}}
 	
 	mkdir $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private
 	$(LN_S) $(MEMO_ROOTFS)/private/preboot $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private/preboot
@@ -60,16 +68,20 @@ roothide: roothide-setup base
 	cp -a $(BUILD_WORK)/libroothide/jbrand	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 	cp -a $(BUILD_WORK)/libroothide/jbroot	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 	cp -a $(BUILD_WORK)/libroothide/rootfs	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
+	cp -a $(BUILD_WORK)/libroothide/symredirect	$(BUILD_STAGE)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 
 	$(call AFTER_BUILD,,,,NO-VROOT)
 endif
 
 roothide-package: roothide-stage
 	# roothide.mk Package Structure
-	rm -rf $(BUILD_DIST)/roothide
+	rm -rf $(BUILD_DIST)/roothide{,-dev}
 
 	# roothide.mk Prep roothide
 	cp -a $(BUILD_STAGE)/roothide $(BUILD_DIST)
+
+	mkdir -p $(BUILD_DIST)/roothide-dev/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
+	mv $(BUILD_DIST)/roothide/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/symredirect $(BUILD_DIST)/roothide-dev/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 
 	$(FAKEROOT) chown -R 0:0 $(BUILD_DIST)/roothide
 	$(FAKEROOT) chown -R 501:501 $(BUILD_DIST)/roothide/$(MEMO_PREFIX)/var/mobile
@@ -80,9 +92,13 @@ roothide-package: roothide-stage
 	# roothide.mk Make .debs
 	$(call PACK,roothide,DEB_ROOTHIDE_V,2)
 
+	# roothide.mk Sign
+	$(call SIGN,roothide-dev,general.xml)
+	
+	# roothide.mk Make .debs
+	$(call PACK,roothide-dev,DEB_ROOTHIDE_V,2)
+
 	# roothide.mk Build cleanup
-	rm -rf $(BUILD_DIST)/roothide
+	rm -rf $(BUILD_DIST)/roothide{,-dev}
 
 .PHONY: roothide roothide-package
-
-endif # ($(MEMO_TARGET),darwin-\*)

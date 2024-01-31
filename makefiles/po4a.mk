@@ -18,7 +18,7 @@ po4a: po4a-setup perl
 	cd $(BUILD_WORK)/po4a && /opt/procursus/bin/perl Build.PL \
 		$(DEFAULT_PERL_BUILD_FLAGS)
 	$(BUILD_WORK)/po4a/Build
-	$(BUILD_WORK)/po4a/Build install
+	$(BUILD_WORK)/po4a/Build install destdir=$(BUILD_STAGE)/po4a
 	rm -rf $(BUILD_STAGE)/perl/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib
 	$(call AFTER_BUILD)
 endif

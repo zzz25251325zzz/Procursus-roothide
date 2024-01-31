@@ -18,6 +18,7 @@ berkeleydb:
 else
 berkeleydb: berkeleydb-setup gettext openssl
 	cd $(BUILD_WORK)/berkeleydb/dist && ./s_config
+	sed -i ':a;N;$$!ba;s|\n\t10\.\*)\n\(\s*_lt_dar_allow_undefined\)|\n\t*)\n\1|g' $(BUILD_WORK)/berkeleydb/dist/configure
 	cd $(BUILD_WORK)/berkeleydb/build_unix && ../dist/configure \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--includedir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/db181 \

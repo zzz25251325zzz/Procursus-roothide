@@ -17,6 +17,7 @@ uuid:
 	@echo "Using previously built uuid."
 else
 uuid: uuid-setup
+	sed -i ':a;N;$$!ba;s|\n\t10\.\*)\n\(\s*_lt_dar_allow_undefined\)|\n\t*)\n\1|g' $(BUILD_WORK)/uuid/configure
 	cd $(BUILD_WORK)/uuid && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		ac_cv_va_copy=yes \

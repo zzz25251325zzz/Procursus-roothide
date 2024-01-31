@@ -740,6 +740,7 @@ DEFAULT_RUST_FLAGS := \
 	PKG_CONFIG="$(RUST_TARGET)-pkg-config" \
 	RUSTFLAGS="-L $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib"
 
+export MACOSX_DEPLOYMENT_TARGET #for _lt_dar_allow_undefined in un-updated `configure` in projects
 export PLATFORM MEMO_ARCH TARGET_SYSROOT MACOSX_SYSROOT GNU_HOST_TRIPLE MEMO_PREFIX MEMO_SUB_PREFIX MEMO_ALT_PREFIX
 export CC CXX AR LD CPP RANLIB STRIP NM LIPO OTOOL I_N_T INSTALL
 export BUILD_ROOT BUILD_BASE BUILD_INFO BUILD_WORK BUILD_STAGE BUILD_DIST BUILD_STRAP BUILD_TOOLS
@@ -782,15 +783,18 @@ CHECKSUM_VERIFY = if [ "$(1)" = "sha1" -o "$(1)" = "sha1sum" ]; then \
 		fi
 
 EXTRACT_TAR = -if [ ! -d $(BUILD_WORK)/$(3) ] || [ "$(4)" = "1" ]; then \
-		if [ -d $(BUILD_ROOT)/source-repo/$(3) ] &&  [ "$(4)" = "" ]; then \
-			echo "using exists source: $(3)"; \
-			cp -a $(BUILD_ROOT)/source-repo/$(3) $(BUILD_WORK)/$(3); \
+		if [ -d $(BUILD_ROOT)/source-repo/$(1)_$(2) ]; then \
+			echo "using patched source: $(1) $(2)"; \
+			cp -a $(BUILD_ROOT)/source-repo/$(1)_$(2) $(BUILD_WORK)/$(3); \
+		elif [ -d $(BUILD_ROOT)/source-temp/$(1)_$(2) ]; then \
+			echo "using exists source: $(1) $(2)"; \
+			cp -a $(BUILD_ROOT)/source-temp/$(1)_$(2) $(BUILD_WORK)/$(3); \
 		else \
 			cd $(BUILD_WORK) && \
 			tar -xf $(BUILD_SOURCE)/$(1) && \
 			mkdir -p $(3); \
 			cp -a $(2)/. $(3); \
-	 		cp -a $(2)/. $(BUILD_ROOT)/source-repo/$(3); \
+	 		cp -a $(2)/. $(BUILD_ROOT)/source-temp/$(1)_$(2); \
 			rm -rf $(2); \
 		fi \
 	fi
@@ -873,6 +877,7 @@ AFTER_BUILD = \
 	fi; \
 	for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 		if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
+			chmod +w $$file; \ #some packages may be installed into the BUILD_STAGE with 0555 permission, for example: berkeleydb
 			$(I_N_T) -add_rpath "$(MEMO_LINK_PREFIX)$(MEMO_SUB_PREFIX)/lib" $$file; \
 			if [ ! -z "$(3)" ]; then \
 				$(I_N_T) -add_rpath "$(3)" $$file; \
@@ -904,10 +909,12 @@ AFTER_BUILD = \
 	find $(BUILD_BASE) -name '*.la' -type f -delete
 
 PACK = \
-	for file in $$(find $(BUILD_DIST)/$(1) -type f -exec sh -c "file -b '{}' | grep 'Mach-O' | grep -q 'executable'" \; -print); do \
-		$(LDID) -M -S$(BUILD_MISC)/entitlements/roothide.xml $$file; \
-		$(LDID) -M -S$(BUILD_MISC)/entitlements/nickchan.xml $$file; \
-	done; \
+	if [ ! -z "$(findstring roothide,$(MEMO_TARGET))" ];then \
+		for file in $$(find $(BUILD_DIST)/$(1) -type f -exec sh -c "file -b '{}' | grep 'Mach-O' | grep -q 'executable'" \; -print); do \
+			$(LDID) -M -S$(BUILD_MISC)/entitlements/roothide.xml $$file; \
+			$(LDID) -M -S$(BUILD_MISC)/entitlements/nickchan.xml $$file; \
+		done; \
+	fi; \
 	if [ -z "$(4)" ]; then \
 		find $(BUILD_DIST)/$(1) -name '*.la' -type f -delete; \
 	fi; \
@@ -999,8 +1006,9 @@ PACK = \
 	echo "Installed-Size: $$SIZE" >> $(BUILD_DIST)/$(1)/DEBIAN/control; \
 	find $(BUILD_DIST)/$(1) -name '.DS_Store' -type f -delete; \
 	mkdir -p $(BUILD_DIST)/../$$(echo $@ | sed 's/-package//'); \
-	rm -rf $(BUILD_ROOT)/build_pack/$(1); \
-	cp -a $(BUILD_DIST)/$(1) $(BUILD_ROOT)/build_pack/; \
+	mkdir -p $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER); \
+	rm -rf $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER)/$(1); \
+	cp -a $(BUILD_DIST)/$(1) $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER)/; \
 	$(FAKEROOT) $(DPKG_DEB) -b $(BUILD_DIST)/$(1) $(BUILD_DIST)/../$$(echo $@ | sed 's/-package//')/$$(grep Package: $(BUILD_DIST)/$(1)/DEBIAN/control | cut -f2 -d ' ')_$($(2))_$$(grep Architecture: $(BUILD_DIST)/$(1)/DEBIAN/control | cut -f2 -d ' ').deb
 
 GITHUB_ARCHIVE = -if [ "x$(5)" != "x" ]; then \
