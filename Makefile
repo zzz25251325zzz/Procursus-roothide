@@ -785,10 +785,12 @@ CHECKSUM_VERIFY = if [ "$(1)" = "sha1" -o "$(1)" = "sha1sum" ]; then \
 EXTRACT_TAR = -if [ ! -d $(BUILD_WORK)/$(3) ] || [ "$(4)" = "1" ]; then \
 		if [ -d $(BUILD_ROOT)/source-repo/$(1)_$(2) ]; then \
 			echo "using patched source: $(1) $(2)"; \
-			cp -a $(BUILD_ROOT)/source-repo/$(1)_$(2) $(BUILD_WORK)/$(3); \
+			mkdir -p $(BUILD_WORK)/$(3); \
+			cp -a $(BUILD_ROOT)/source-repo/$(1)_$(2)/. $(BUILD_WORK)/$(3); \
 		elif [ -d $(BUILD_ROOT)/source-temp/$(1)_$(2) ]; then \
 			echo "using exists source: $(1) $(2)"; \
-			cp -a $(BUILD_ROOT)/source-temp/$(1)_$(2) $(BUILD_WORK)/$(3); \
+			mkdir -p $(BUILD_WORK)/$(3); \
+			cp -a $(BUILD_ROOT)/source-temp/$(1)_$(2)/. $(BUILD_WORK)/$(3); \
 		else \
 			cd $(BUILD_WORK) && \
 			tar -xf $(BUILD_SOURCE)/$(1) && \
@@ -877,7 +879,7 @@ AFTER_BUILD = \
 	fi; \
 	for file in $$(find $(BUILD_STAGE)/$$pkg -type f -exec sh -c "file -ib '{}' | grep -q 'x-mach-binary; charset=binary'" \; -print); do \
 		if [ $${file\#\#*.} != "a" ] && [ $${file\#\#*.} != "dSYM" ]; then \
-			chmod +w $$file; \ #some packages may be installed into the BUILD_STAGE with 0555 permission, for example: berkeleydb
+			chmod +w $$file; echo "some packages may be installed into the BUILD_STAGE with 0555 permission, for example: berkeleydb" > /dev/null; \
 			$(I_N_T) -add_rpath "$(MEMO_LINK_PREFIX)$(MEMO_SUB_PREFIX)/lib" $$file; \
 			if [ ! -z "$(3)" ]; then \
 				$(I_N_T) -add_rpath "$(3)" $$file; \
