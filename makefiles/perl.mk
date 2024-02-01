@@ -18,6 +18,7 @@ perl-setup: setup
 	$(call EXTRACT_TAR,perl-$(PERL_VERSION).tar.gz,perl-$(PERL_VERSION),perl)
 	chmod -R +w $(BUILD_WORK)/perl
 	$(call EXTRACT_TAR,perl-cross-$(PERL_CROSS_V).tar.gz,perl-cross-$(PERL_CROSS_V),perl,1)
+	sed -i 's|#  include <poll.h>|#  include <sys/poll.h>|g' $(BUILD_WORK)/perl/dist/IO/poll.h
 	sed -i 's/readelf --syms/nm -g/g' $(BUILD_WORK)/perl/cnf/configure_type.sh
 	sed -i 's/readelf/nm/g' $(BUILD_WORK)/perl/cnf/configure__f.sh
 	sed -i 's/readelf/nm/g' $(BUILD_WORK)/perl/cnf/configure_tool.sh
