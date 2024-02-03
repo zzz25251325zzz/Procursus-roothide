@@ -18,6 +18,10 @@ ifeq ($(shell [ "$(CFVER_WHOLE)" -lt 1700 ] && echo 1),1)
 OPENSSH_CONFIGURE_ARGS += ac_cv_func_strtonum=no
 endif
 
+ifneq (,$(findstring roothide,$(MEMO_TARGET)))
+OPENSSH_CONFIGURE_ARGS += --with-default-path=$(shell printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11:/usr/games\n" | tr ':' '\n' | sed "p; s|^|$(MEMO_ROOTFS)|" | tr '\n' ':' | sed 's|:$$|\n|')
+endif
+
 openssh-setup: setup
 	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-$(OPENSSH_VERSION).tar.gz{$(comma).asc})
 	$(call PGP_VERIFY,openssh-$(OPENSSH_VERSION).tar.gz,asc)
@@ -28,12 +32,6 @@ endif
 ifeq (,$(findstring ramdisk,$(MEMO_TARGET)))
 	sed -i 's/#UsePAM no/UsePAM yes/' $(BUILD_WORK)/openssh/sshd_config
 endif #(,$(findstring ramdisk,$(MEMO_TARGET)))
-ifneq (,$(MEMO_PREFIX))
-	sed -i 's|/usr/bin:/bin:/usr/sbin:/sbin|$(shell printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n" | tr ':' '\n' | sed "p; s|^|$(MEMO_PREFIX)|" | tr '\n' ':' | sed 's|:$$|\n|')|' $(BUILD_WORK)/openssh/defines.h
-endif
-ifneq (,$(MEMO_ROOTFS))
-	sed -i 's|/usr/bin:/bin:/usr/sbin:/sbin|$(shell printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n" | tr ':' '\n' | sed "p; s|^|$(MEMO_ROOTFS)|" | tr '\n' ':' | sed 's|:$$|\n|')|' $(BUILD_WORK)/openssh/defines.h
-endif
 
 ifneq ($(wildcard $(BUILD_WORK)/openssh/.build_complete),)
 openssh:
