@@ -23,7 +23,7 @@ darling-utils: darling-utils-setup xar
 	sed 's|/usr|$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)|g' unxip > $(BUILD_STAGE)/darling-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/unxip
 	chmod +x $(BUILD_STAGE)/darling-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/unxip
 	cd $(BUILD_WORK)/darling-utils/src/PlistBuddy; \
-		$(CC) $(CFLAGS) $(LDFLAGS) PlistBuddy.c -framework CoreFoundation -o $(BUILD_STAGE)/darling-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/PlistBuddy; \
+		$(CC) $(CFLAGS) $(LDFLAGS) -lroothide PlistBuddy.c -framework CoreFoundation -o $(BUILD_STAGE)/darling-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/libexec/PlistBuddy; \
 		install -m644 PlistBuddy.8 $(BUILD_STAGE)/darling-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man8
 	$(call AFTER_BUILD)
 endif

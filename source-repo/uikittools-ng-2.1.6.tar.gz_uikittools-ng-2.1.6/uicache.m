@@ -275,11 +275,11 @@ BOOL constructContainerizationForEntitlements(NSString* path, NSDictionary *enti
 	NSNumber *noSandbox = entitlements[@"com.apple.private.security.no-sandbox"];
 	if (noSandbox && [noSandbox isKindOfClass:[NSNumber class]]) {
 		if (noSandbox.boolValue) {
-
-			NSNumber*AppDataContainers = entitlements[@"com.apple.private.security.storage.AppDataContainers"];
-			if (AppDataContainers && [AppDataContainers isKindOfClass:[NSNumber class]]) {
-				if (AppDataContainers.boolValue) return YES; //hack way
-			}
+			// may conflict with patcher
+			// NSNumber*AppDataContainers = entitlements[@"com.apple.private.security.storage.AppDataContainers"];
+			// if (AppDataContainers && [AppDataContainers isKindOfClass:[NSNumber class]]) {
+			// 	if (AppDataContainers.boolValue) return YES; //hack way
+			// }
 			
 			return NO;
 		}
@@ -306,9 +306,10 @@ NSString *constructTeamIdentifierForEntitlements(NSDictionary *entitlements) {
 	return nil;
 }
 
+//sometimes launching the app may lose those environment variables
 NSDictionary *constructEnvironmentVariablesForContainerPath(NSString *containerPath, BOOL isContainerized) {
-	NSString *homeDir = isContainerized ? containerPath : @"/var/mobile";
-	NSString *tmpDir = isContainerized ? [containerPath stringByAppendingPathComponent:@"tmp"] : @"/var/tmp";
+	NSString *homeDir = isContainerized ? containerPath : jbroot(@"/var/mobile");
+	NSString *tmpDir = isContainerized ? [containerPath stringByAppendingPathComponent:@"tmp"] : jbroot(@"/var/tmp");
 	return @{
 		@"CFFIXED_USER_HOME" : homeDir,
 		@"HOME" : homeDir,
@@ -457,10 +458,10 @@ void registerPath(NSString *path, BOOL forceSystem)
 		pluginDict[@"CompatibilityState"] = @0;
 
 		NSString* pluginDataContainerID = nil;
-		BOOL pluginContainerized = constructContainerizationForEntitlements(pluginPath, pluginEntitlements, &pluginDataContainerID);
+		BOOL pluginContainerized = YES; //pkd required plugin to have sandbox data container; constructContainerizationForEntitlements(pluginPath, pluginEntitlements, &pluginDataContainerID);
 		pluginDict[@"IsContainerized"] = @(pluginContainerized);
 		if (pluginContainerized) {
-			/* a plugin may use app's container, but lsd still create plugin-bundle-id container for it */
+			/* don't use pluginDataContainerID : a plugin may use app's container, but lsd still create plugin-bundle-id container for it */
 			MCMContainer *pluginContainer = [NSClassFromString(@"MCMPluginKitPluginDataContainer") containerWithIdentifier:pluginBundleID createIfNecessary:YES existed:nil error:nil];
 			NSString *pluginContainerPath = [pluginContainer url].path;
 

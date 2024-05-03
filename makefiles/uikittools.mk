@@ -8,7 +8,7 @@ else
 STRAPPROJECTS      += uikittools
 endif
 UIKITTOOLS_VERSION := 2.1.6
-DEB_UIKITTOOLS_V   ?= $(UIKITTOOLS_VERSION)-1
+DEB_UIKITTOOLS_V   ?= $(UIKITTOOLS_VERSION)-2
 
 uikittools-setup: setup
 	$(call GITHUB_ARCHIVE,ProcursusTeam,uikittools-ng,$(UIKITTOOLS_VERSION),v$(UIKITTOOLS_VERSION))

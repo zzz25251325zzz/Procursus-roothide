@@ -563,10 +563,12 @@ ifeq ($(DEBUG),1)
 OPTIMIZATION_FLAGS := -g -O0
 else ifeq ($(MEMO_TARGET),bridgeos-arm64)
 OPTIMIZATION_FLAGS := -Oz
-else ifeq ($(BINPACK),1)
+else 
+ifeq ($(BINPACK),1)
 OPTIMIZATION_FLAGS := -Oz
 else
 OPTIMIZATION_FLAGS := -Os
+endif
 ifeq ($(UNAME),Darwin)
 OPTIMIZATION_FLAGS += -flto=thin
 else ifeq ($(MEMO_FORCE_LTO),1)
@@ -600,6 +602,8 @@ ifneq ($(MEMO_NO_IOSEXEC),1)
 LDFLAGS             += -liosexec
 else
 CFLAGS              += -DLIBIOSEXEC_INTERNAL
+CXXFLAGS            += -DLIBIOSEXEC_INTERNAL
+CPPFLAGS            += -DLIBIOSEXEC_INTERNAL
 endif
 endif
 
@@ -912,7 +916,7 @@ AFTER_BUILD = \
 	fi; \
 	[ -d $(BUILD_WORK)/$$pkg/ ] || mkdir $(BUILD_WORK)/$$pkg/; \
 	touch $(BUILD_WORK)/$$pkg/.build_complete; \
-	find $(BUILD_BASE) -name '*.la' -type f -delete
+	find $(BUILD_BASE) -name '*.la' \( -type f -o -type l \) -delete
 
 PACK = \
 	if [ ! -z "$(findstring roothide,$(MEMO_TARGET))" ];then \
@@ -922,7 +926,7 @@ PACK = \
 		done; \
 	fi; \
 	if [ -z "$(4)" ]; then \
-		find $(BUILD_DIST)/$(1) -name '*.la' -type f -delete; \
+		find $(BUILD_DIST)/$(1) -name '*.la' \( -type f -o -type l \) -delete; \
 	fi; \
 	rm -f $(BUILD_DIST)/$(1)/.build_complete; \
 	rm -rf $(BUILD_DIST)/$(1)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/{info,doc}; \
@@ -1566,6 +1570,10 @@ setup:
 
 	@cp -a $(BUILD_MISC)/{libxml-2.0,zlib}.pc $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/pkgconfig
 
+ifeq ($(shell [ "$(CFVER_WHOLE)" -ge 1700 ] && echo 1),1)
+	@cp -a $(BUILD_MISC)/expat.pc $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/pkgconfig
+endif
+
 ifeq ($(UNAME),FreeBSD)
 	@# FreeBSD's LLVM does not have stdbool.h, stdatomic.h, and stdarg.h
 	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/Kernel.framework/Headers/{stdbool,stdatomic,stdarg}.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include
@@ -1630,7 +1638,7 @@ endif
 	@sed -i -e 's/__osloglike([0-9], [0-9])//' -e 's|extern void \*__dso_handle;|#ifndef __OS_TRACE_BASE_H__\nextern struct mach_header __dso_handle;\n#endif|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/os/log{,_private}.h
 	@sed -i 's/, ios(NA), bridgeos(NA)//' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security/SecBasePriv.h
 	@sed -i 's/__API_UNAVAILABLE(ios, tvos, watchos) __API_UNAVAILABLE(bridgeos)//' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/mach-o/dyld_process_info.h
-	@sed -i 's/, bridgeos(4.0)//' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/dispatch/{mach,data,source}_private.h
+	@sed 's/#ifndef __OPEN_SOURCE__/#if 1\n#if defined(__has_feature) \&\& defined(__has_attribute)\n#if __has_attribute(availability)\n#define __API_AVAILABLE_PLATFORM_bridgeos(x) bridgeos,introduced=x\n#define __API_DEPRECATED_PLATFORM_bridgeos(x,y) bridgeos,introduced=x,deprecated=y\n#define __API_UNAVAILABLE_PLATFORM_bridgeos bridgeos,unavailable\n#endif\n#endif/g' < $(TARGET_SYSROOT)/usr/include/AvailabilityInternal.h > $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/AvailabilityInternal.h
 
 	@# Setup libiosexec
 	@cp -af $(BUILD_MISC)/libiosexec/libiosexec.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include
