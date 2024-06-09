@@ -288,7 +288,7 @@ int main(int argc, char *argv[], char *envp[]) {
 				if (![exportPlist.pathExtension isEqualToString:@"plist"]) exportPlist = [NSString stringWithFormat:@"%@.plist", exportPlist];
 				output = exportPlist;
 			}
-			[[gpxParserDelegate scenario] writeToFile:(output) atomically:NO];
+			[[gpxParserDelegate scenario] writeToFile:jbroot(output) atomically:NO];
 			if (exportPlist.length > 0) {PRINT("Exported to \"%s\"\n", output.UTF8String);}
 			if (!exportOnly) start_scenario_sim(output, ldb, lrb);
 		}else{
