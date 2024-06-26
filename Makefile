@@ -97,6 +97,7 @@ DEB_ARCH              := iphoneos-arm
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -117,6 +118,7 @@ DEB_ARCH              := iphoneos-arm64
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?= /var/jb
@@ -157,6 +159,7 @@ DEB_ARCH              := iphoneos-arm64e
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64e-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?= /var/jb
@@ -196,6 +199,7 @@ DEB_ARCH              := iphoneos-arm64e
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-ios
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64e-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -215,6 +219,7 @@ DEB_ARCH              := iphoneos-arm
 GNU_HOST_TRIPLE       := armv7-apple-darwin
 PLATFORM_VERSION_MIN  := -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := armv7-apple-ios
+GOLANG_OS             := ios
 LLVM_TARGET           := armv7-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -234,6 +239,7 @@ DEB_ARCH              := appletvos-arm64
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mappletvos-version-min=$(APPLETVOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-tvos
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64-apple-tvos$(APPLETVOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -253,6 +259,7 @@ DEB_ARCH              := appletvos-arm64e
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mappletvos-version-min=$(APPLETVOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-tvos
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64e-apple-tvos$(APPLETVOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -291,6 +298,7 @@ DEB_ARCH              := bridgeos-arm64
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := --target=arm64-apple-bridgeos$(BRIDGEOS_DEPLOYMENT_TARGET)
 RUST_TARGET           := aarch64-apple-bridgeos
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64-apple-bridgeos$(BRIDGEOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -309,7 +317,8 @@ PLATFORM              := watchos
 DEB_ARCH              := watchos-arm64-32
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 PLATFORM_VERSION_MIN  := -mwatchos-version-min=$(WATCHOS_DEPLOYMENT_TARGET)
-RUST_TARGET           := aarch64-apple-watchos
+RUST_TARGET           := arm64_32-apple-watchos
+GOLANG_OS             := ios
 LLVM_TARGET           := arm64_32-apple-watchos$(WATCHOS_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
 MEMO_PREFIX           ?=
@@ -348,6 +357,7 @@ PLATFORM              := macosx
 DEB_ARCH              := darwin-arm64e
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
+GOLANG_OS             := darwin
 LLVM_TARGET           := arm64e-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
@@ -368,6 +378,7 @@ PLATFORM              := macosx
 DEB_ARCH              := darwin-arm64
 GNU_HOST_TRIPLE       := aarch64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
+GOLANG_OS             := darwin
 LLVM_TARGET           := arm64-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
@@ -388,6 +399,7 @@ PLATFORM              := macosx
 DEB_ARCH              := darwin-amd64
 GNU_HOST_TRIPLE       := x86_64-apple-darwin
 RUST_TARGET           := $(GNU_HOST_TRIPLE)
+GOLANG_OS             := darwin
 LLVM_TARGET           := x86_64-apple-macos$(MACOSX_DEPLOYMENT_TARGET)
 PLATFORM_VERSION_MIN  := -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 MEMO_ROOTFS           ?=
