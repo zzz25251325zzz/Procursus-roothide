@@ -49,7 +49,7 @@ pasteboard-utils-package: pasteboard-utils-stage
 	cp -a $(BUILD_STAGE)/pasteboard-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/pbpaste $(BUILD_DIST)/pasteboard-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# pasteboard-utils.mk Sign
-	$(call SIGN,pasteboard-utils,general.xml)
+	$(call SIGN,pasteboard-utils,pasteboard-utils.xml)
 
 	# pasteboard-utils.mk Make .debs
 	$(call PACK,pasteboard-utils,DEB_PASTEBOARD-UTILS_V)

@@ -31,6 +31,10 @@ int main (int argc, char* argv[]) {
         NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = dataString;
+
+        //hack: sync the pasteboard
+        pasteboard.string;
+
         NSLog(@"Data copied to clipboard.");
     }
 }
