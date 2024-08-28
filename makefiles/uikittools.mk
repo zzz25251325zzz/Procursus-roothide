@@ -7,12 +7,13 @@ SUBPROJECTS        += uikittools
 else
 STRAPPROJECTS      += uikittools
 endif
+UIKITTOOLS_COMMIT  := 55dc95a8a2fcbe83d1c683c4adbda8276e87d009
 UIKITTOOLS_VERSION := 2.1.6
 DEB_UIKITTOOLS_V   ?= $(UIKITTOOLS_VERSION)-2
 
 uikittools-setup: setup
-	$(call GITHUB_ARCHIVE,ProcursusTeam,uikittools-ng,$(UIKITTOOLS_VERSION),v$(UIKITTOOLS_VERSION))
-	$(call EXTRACT_TAR,uikittools-ng-$(UIKITTOOLS_VERSION).tar.gz,uikittools-ng-$(UIKITTOOLS_VERSION),uikittools)
+	$(call GITHUB_ARCHIVE,roothide,uikittools-ng,$(UIKITTOOLS_COMMIT),$(UIKITTOOLS_COMMIT))
+	$(call EXTRACT_TAR,uikittools-ng-$(UIKITTOOLS_COMMIT).tar.gz,uikittools-ng-$(UIKITTOOLS_COMMIT),uikittools)
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 UIKITTOOLS_MAKE_ARGS += NO_COMPAT=1
