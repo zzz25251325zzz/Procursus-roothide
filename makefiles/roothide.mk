@@ -9,12 +9,13 @@ SUBPROJECTS += roothide
 endif
 
 ROOTHIDE_VERSION  := 0.0.8
+ROOTHIDE_COMMIT  := 9d98e57e91a689d342ade42085a7fb4c3f8f8891
 DEB_ROOTHIDE_V    ?= $(ROOTHIDE_VERSION)
 export DEB_ROOTHIDE_V
 
 roothide-setup: setup
-	$(call GITHUB_ARCHIVE,roothide,libroothide,$(ROOTHIDE_VERSION),$(ROOTHIDE_VERSION))
-	$(call EXTRACT_TAR,libroothide-$(ROOTHIDE_VERSION).tar.gz,libroothide-$(ROOTHIDE_VERSION),libroothide)
+	$(call GITHUB_ARCHIVE,roothide,libroothide,$(ROOTHIDE_COMMIT),$(ROOTHIDE_COMMIT))
+	$(call EXTRACT_TAR,libroothide-$(ROOTHIDE_COMMIT).tar.gz,libroothide-$(ROOTHIDE_COMMIT),libroothide)
 
 ifneq ($(wildcard $(BUILD_WORK)/roothide/.build_complete),)
 roothide:
@@ -27,7 +28,7 @@ roothide: roothide-setup
 endif
 	mkdir -p $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/{var/mobile,etc,$(MEMO_SUB_PREFIX)/{bin,sbin,lib,libexec}}
 	
-	mkdir $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private
+	mkdir -p $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private
 	$(LN_S) $(MEMO_ROOTFS)/private/preboot $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private/preboot
 	$(LN_S) ../var $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/private/var
 	$(LN_S) ../tmp $(BUILD_STAGE)/roothide/$(MEMO_PREFIX)/var/tmp
