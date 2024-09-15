@@ -8,13 +8,18 @@ MACOSX_SDK_VERSION=11.3 #from https://github.com/phracker/MacOSX-SDKs/releases/t
 
 cd ~
 
-if which aarch64-apple-darwin-clang; then
-    echo "an exists toolchain is already in your PATH, please remove it from PATH before running this script"
+if ! eval $(echo "echo $PATH") ||  ; then
+    echo "*** your PATH contains special characters, please start a new shell with a clean PATH to build Procursus-roothide"
     exit
 fi
 
 if [ -d ~/cctools ]; then
-    echo "cctools already exists in $(realpath ~/cctools), please remove it before running this script"
+    echo "*** cctools already exists in $(realpath ~/cctools), please remove it before running this script"
+    exit
+fi
+
+if which aarch64-apple-darwin-clang; then
+    echo "*** an exists toolchain is already in your PATH, please remove it from PATH before running this script"
     exit
 fi
 
@@ -97,7 +102,7 @@ done
 
 # if the sdk's c++ header is not compatible with the old llvm/clang, we need to use theos' c++ header to build for ios
 if ! echo -e "#include <string>\n#include <iostream>\nint main(){std::cout << std::string(\"test\");return 0;}" | ./target/bin/aarch64-apple-darwin-clang++ -x c++ -c -stdlib=libc++ -isysroot ~/cctools/SDK/iPhoneOS.sdk -v - ; then
-    echo "***warning: the host's llvm/clang++ may not be compatible with the current iPhoneOS$IOS_SDK_VERSION.sdk, you can upgrade your llvm/clang or use an older version of iPhoneOS.sdk"
+    echo "*** warning: the host's llvm/clang++ may not be compatible with the current iPhoneOS$IOS_SDK_VERSION.sdk, you can upgrade your llvm/clang or use an older version of iPhoneOS.sdk"
     exit
     # sudo apt install -y libc++-dev
     # rm -rf ~/cctools/SDK/iPhoneOS.sdk/usr/include/c++
@@ -161,7 +166,7 @@ if [ ! -f ./ldid/.build_complete ]; then
     touch ./ldid/.build_complete
 fi
 
-echo 'All done, now you can add
+echo '*** All done ***, now you can add
 
  ~/cctools/bin          (using host'\''s llvm/clang)
 
