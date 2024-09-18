@@ -1019,7 +1019,6 @@ PACK = \
 	mkdir -p $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER); \
 	rm -rf $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER)/$(1); \
 	cp -a $(BUILD_DIST)/$(1) $(BUILD_ROOT)/pack-cache/$(MEMO_TARGET)/$(MEMO_CFVER)/; \
-	$(FAKEROOT) bash -c 'find $(BUILD_DIST)/$(1)/ -type f,d | while read -r path; do chmod $$(stat -c "%a" "$$path") "$$path"; done'; \
 	$(FAKEROOT) $(DPKG_DEB) -b $(BUILD_DIST)/$(1) $(BUILD_DIST)/../$$(echo $@ | sed 's/-package//')/$$(grep Package: $(BUILD_DIST)/$(1)/DEBIAN/control | cut -f2 -d ' ')_$($(2))_$$(grep Architecture: $(BUILD_DIST)/$(1)/DEBIAN/control | cut -f2 -d ' ').deb
 
 GITHUB_ARCHIVE = -if [ "x$(5)" != "x" ]; then \
