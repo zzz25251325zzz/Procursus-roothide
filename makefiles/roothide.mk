@@ -97,7 +97,7 @@ roothide-package: roothide-stage
 	$(call SIGN,roothide-dev,general.xml)
 	
 	# roothide.mk Make .debs
-	$(call PACK,roothide-dev,DEB_ROOTHIDE_V,2)
+	$(call PACK,roothide-dev,DEB_ROOTHIDE_V)
 
 	# roothide.mk Build cleanup
 	rm -rf $(BUILD_DIST)/roothide{,-dev}
