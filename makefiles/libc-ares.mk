@@ -7,7 +7,7 @@ LIBC-ARES_VERSION := 1.19.0
 DEB_LIBC-ARES_V   ?= $(LIBC-ARES_VERSION)
 
 libc-ares-setup: setup
-	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://c-ares.haxx.se/download/c-ares-$(LIBC-ARES_VERSION).tar.gz{$(comma).asc})
+	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://github.com/c-ares/c-ares/releases/download/cares-1_19_0/c-ares-$(LIBC-ARES_VERSION).tar.gz{$(comma).asc})
 	$(call PGP_VERIFY,c-ares-$(LIBC-ARES_VERSION).tar.gz,asc)
 	$(call EXTRACT_TAR,c-ares-$(LIBC-ARES_VERSION).tar.gz,c-ares-$(LIBC-ARES_VERSION),libc-ares)
 
